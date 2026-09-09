@@ -2,6 +2,8 @@ import memesJson from '../../data/memes.json';
 import eventsJson from '../../data/events.json';
 import upgradesJson from '../../data/upgrades.json';
 import achievementsJson from '../../data/achievements.json';
+import seasonsJson from '../../data/seasons.json';
+import cosmeticsJson from '../../data/cosmetics.json';
 
 export interface MemeDef {
   id: string;
@@ -51,6 +53,23 @@ export const MEMES: MemeDef[] = memesJson as MemeDef[];
 export const EVENTS: EventDef[] = eventsJson as EventDef[];
 export const UPGRADES: UpgradeDef[] = upgradesJson as UpgradeDef[];
 export const ACHIEVEMENTS: AchievementDef[] = achievementsJson as AchievementDef[];
+
+export interface SeasonDef {
+  season: number;
+  unlockAfter: number; // content seasons played to unlock
+  name: { ru: string; en: string };
+}
+
+export interface CosmeticDef {
+  id: string;
+  cost: number;
+  accent: string;
+  accent2: string;
+  name: { ru: string; en: string };
+}
+
+export const SEASONS: SeasonDef[] = seasonsJson as SeasonDef[];
+export const COSMETICS: CosmeticDef[] = cosmeticsJson as CosmeticDef[];
 
 export const memeById = new Map(MEMES.map((m) => [m.id, m]));
 

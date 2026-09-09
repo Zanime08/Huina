@@ -24,7 +24,9 @@ export const CONFIG = {
   priceBase: 2,             // price = priceBase + hype/100 * priceScale * phaseMult
   priceScale: 18,
   adCooldownSec: 180,       // min active play between interstitials
-  saveVersion: 1,
+  saveVersion: 2,
+  streakBonusPerDay: 15,     // extra daily coins per streak day (cap 7)
+  maxSeason: 2,
   cloudSaveDebounceMs: 5000,
 } as const;
 

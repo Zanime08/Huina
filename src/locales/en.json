@@ -49,7 +49,13 @@
   "upg_level": "lv.",
   "upg_max": "MAX",
   "upg_buy": "Buy {n}",
-  "upg_studio_names": ["Garage", "Coworking", "Office", "Hype Hub", "HYPE Tower"],
+  "upg_studio_names": [
+    "Garage",
+    "Coworking",
+    "Office",
+    "Hype Hub",
+    "HYPE Tower"
+  ],
   "coll_title": "Meme album",
   "coll_found": "Found: {a}/{b}",
   "coll_locked": "???",
@@ -92,5 +98,19 @@
   "lb_empty": "Empty yet — be the first!",
   "how_title": "How to play",
   "how_text": "Buy stakes in rising memes (FARM), sell at the peak (SELL). Don't hold cringe — it loses value! Watch the news: it moves hype.",
-  "close": "Close"
+  "close": "Close",
+  "menu_season_fmt": "Season {n} {t}",
+  "menu_streak": "🔥 Streak: {n}",
+  "streak_bonus": "+{n} streak bonus 🔥",
+  "hud_goal": "Goal",
+  "ms_viral": "🚀 {t} WENT VIRAL!",
+  "ms_peak": "📈 {t} AT PEAK! SELL!",
+  "ms_cringe": "🥴 {t} slid into cringe...",
+  "ms_dead": "💀 {t} is dead. R.I.P.",
+  "season2_unlocked": "✨ New content: {t}!",
+  "cos_title": "🎨 Themes",
+  "cos_active": "Active",
+  "cos_use": "Use",
+  "day_banner": "Day {n}",
+  "next_season_pool": "New meme pool in seasons: {n}"
 }

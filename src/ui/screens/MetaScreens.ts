@@ -2,8 +2,10 @@ import { el, fmt, toast, modal, avatarSVG } from '../helpers';
 import { i18n } from '../i18n';
 import { audio } from '../../audio/audioManager';
 import { saveManager } from '../../meta/saveManager';
-import { UPGRADES, ACHIEVEMENTS, MEMES, memeById } from '../../sim/memeRegistry';
+import { analytics } from '../../meta/analytics';
+import { UPGRADES, ACHIEVEMENTS, MEMES, COSMETICS } from '../../sim/memeRegistry';
 import { upgradeCost, studioTier, STUDIO_EMOJI } from '../../sim/economy';
+import { applyCosmetic } from '../cosmetics';
 
 function topbar(title: string, onBack: () => void, coins = true): HTMLElement {
   const bar = el('div', 'topbar');
@@ -17,59 +19,89 @@ function topbar(title: string, onBack: () => void, coins = true): HTMLElement {
 
 export class UpgradesScreen {
   readonly root: HTMLElement;
-  constructor(onBack: () => void) {
+  constructor(private onBack: () => void) {
     const root = el('div', 'screen');
-    root.appendChild(topbar(i18n.t('upg_title'), onBack));
+    this.root = root;
+    this.render();
+  }
+
+  private render(): void {
+    const root = this.root;
+    root.innerHTML = '';
+    root.appendChild(topbar(i18n.t('upg_title'), this.onBack));
     const tier = studioTier(saveManager.data);
     const names = i18n.arr('upg_studio_names');
     const sv = el('div', 'studio-visual');
     sv.innerHTML = `<div class="studio-emoji">${STUDIO_EMOJI[tier]}</div><div><b>${names[tier] ?? ''}</b></div>`;
     root.appendChild(sv);
-    const list = el('div', 'screen');
-    list.style.padding = '0';
-    const render = () => {
-      list.innerHTML = '';
-      for (const u of UPGRADES) {
-        const lv = saveManager.data.upgrades[u.id] ?? 0;
-        const cost = upgradeCost(u.id, lv);
-        const row = el('div', 'upg');
-        const info = el('div', 'upg-info');
-        const nm = i18n.lang === 'ru' ? u.name.ru : u.name.en;
-        const ds = i18n.lang === 'ru' ? u.desc.ru : u.desc.en;
-        info.append(
-          el('div', 'upg-name', `${nm} <span class="upg-lvl">${i18n.t('upg_level')}${lv}/${u.maxLevel}</span>`),
-          el('div', 'upg-desc', ds),
-        );
-        const pips = el('div', 'pips');
-        for (let i = 0; i < u.maxLevel; i++) pips.appendChild(el('div', `pip${i < lv ? ' on' : ''}`));
-        info.appendChild(pips);
-        row.appendChild(info);
-        const btn = el('button', 'btn small', cost === null ? i18n.t('upg_max') : i18n.t('upg_buy', { n: `🪙${fmt(cost)}` })) as HTMLButtonElement;
-        btn.style.flex = '0 0 auto';
-        btn.style.width = 'auto';
-        btn.disabled = cost === null || saveManager.data.coins < cost;
-        btn.onclick = () => {
-          if (cost === null) return;
-          if (saveManager.data.coins < cost) { audio.error(); return; }
-          saveManager.addCoins(-cost);
-          saveManager.data.upgrades[u.id] = lv + 1;
-          saveManager.saveAll();
-          audio.buy();
-          toast(`⬆ ${nm} → ${i18n.t('upg_level')}${lv + 1}`, 'gold');
-          // re-render whole screen coins + list
-          root.innerHTML = '';
-          root.appendChild(topbar(i18n.t('upg_title'), onBack));
-          root.appendChild(sv);
-          root.appendChild(list);
-          render();
-        };
-        row.appendChild(btn);
-        list.appendChild(row);
-      }
-    };
-    render();
-    root.appendChild(list);
-    this.root = root;
+
+    for (const u of UPGRADES) {
+      const lv = saveManager.data.upgrades[u.id] ?? 0;
+      const cost = upgradeCost(u.id, lv);
+      const row = el('div', 'upg');
+      const info = el('div', 'upg-info');
+      const nm = i18n.lang === 'ru' ? u.name.ru : u.name.en;
+      const ds = i18n.lang === 'ru' ? u.desc.ru : u.desc.en;
+      info.append(
+        el('div', 'upg-name', `${nm} <span class="upg-lvl">${i18n.t('upg_level')}${lv}/${u.maxLevel}</span>`),
+        el('div', 'upg-desc', ds),
+      );
+      const pips = el('div', 'pips');
+      for (let i = 0; i < u.maxLevel; i++) pips.appendChild(el('div', `pip${i < lv ? ' on' : ''}`));
+      info.appendChild(pips);
+      row.appendChild(info);
+      const btn = el('button', 'btn small', cost === null ? i18n.t('upg_max') : i18n.t('upg_buy', { n: `🪙${fmt(cost)}` })) as HTMLButtonElement;
+      btn.style.flex = '0 0 auto';
+      btn.style.width = 'auto';
+      btn.disabled = cost === null || saveManager.data.coins < cost;
+      btn.onclick = () => {
+        if (cost === null) return;
+        if (saveManager.data.coins < cost) { audio.error(); return; }
+        saveManager.addCoins(-cost);
+        saveManager.data.upgrades[u.id] = lv + 1;
+        saveManager.saveAll();
+        analytics.event('upgrade_buy', { id: u.id, lv: lv + 1 });
+        audio.buy();
+        toast(`⬆ ${nm} → ${i18n.t('upg_level')}${lv + 1}`, 'gold');
+        this.render();
+      };
+      row.appendChild(btn);
+      root.appendChild(row);
+    }
+
+    // --- cosmetics shop ---
+    root.appendChild(el('h2', '', i18n.t('cos_title')));
+    const grid = el('div', 'cos-grid');
+    const cos = saveManager.data.cosmetics;
+    for (const skin of COSMETICS) {
+      const owned = cos.owned.includes(skin.id);
+      const active = cos.active === skin.id;
+      const item = el('div', `cos-item${active ? ' active' : ''}`);
+      const sw = el('div', 'cos-swatch');
+      sw.style.background = `linear-gradient(135deg, ${skin.accent}, ${skin.accent2})`;
+      item.appendChild(sw);
+      item.appendChild(el('div', 'cos-name', i18n.lang === 'ru' ? skin.name.ru : skin.name.en));
+      const btn = el('button', 'btn small', active ? `✓ ${i18n.t('cos_active')}` : owned ? i18n.t('cos_use') : `🪙${fmt(skin.cost)}`) as HTMLButtonElement;
+      btn.style.marginTop = '6px';
+      btn.disabled = active || (!owned && saveManager.data.coins < skin.cost);
+      btn.onclick = () => {
+        if (!owned) {
+          if (saveManager.data.coins < skin.cost) { audio.error(); return; }
+          saveManager.addCoins(-skin.cost);
+          cos.owned.push(skin.id);
+          analytics.event('cosmetic_buy', { id: skin.id });
+        }
+        cos.active = skin.id;
+        saveManager.saveAll();
+        applyCosmetic();
+        analytics.event('cosmetic_use', { id: skin.id });
+        audio.buy();
+        this.render();
+      };
+      item.appendChild(btn);
+      grid.appendChild(item);
+    }
+    root.appendChild(grid);
   }
   destroy(): void { this.root.remove(); }
 }
@@ -92,7 +124,7 @@ export class CollectionScreen {
       item.appendChild(img);
       item.appendChild(el('div', '', found ? (i18n.lang === 'ru' ? m.name.ru : m.name.en) : i18n.t('coll_locked')));
       const tag = m.rarity === 'legendary' ? '🟡' : m.rarity === 'epic' ? '🟣' : m.rarity === 'rare' ? '🔵' : '⚪';
-      item.appendChild(el('div', 'muted', found ? tag : '🔒'));
+      item.appendChild(el('div', 'muted', found ? `${tag} S${m.seasons[0]}` : '🔒'));
       grid.appendChild(item);
     }
     root.appendChild(grid);
@@ -119,7 +151,6 @@ export class AchievementsScreen {
       row.appendChild(info);
       root.appendChild(row);
     }
-    void memeById;
     this.root = root;
   }
   destroy(): void { this.root.remove(); }

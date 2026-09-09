@@ -1,5 +1,5 @@
 import { CONFIG } from '../config';
-import { UPGRADES } from './memeRegistry';
+import { UPGRADES, SEASONS } from './memeRegistry';
 import type { SaveData } from '../meta/saveManager';
 
 export interface UpgradeEffects {
@@ -55,3 +55,40 @@ export function studioTier(save: SaveData): number {
 }
 
 export const STUDIO_EMOJI = ['🏚️', '🏢', '🏬', '🌃', '🌆'];
+
+/** Content season (meme pool rotation): unlocks as you play more seasons. */
+export function contentSeason(save: SaveData): number {
+  let cur = 1;
+  for (const s of SEASONS) {
+    if (save.seasonsPlayed >= s.unlockAfter && s.season <= CONFIG.maxSeason) cur = s.season;
+  }
+  return cur;
+}
+
+export function contentSeasonName(save: SaveData, lang: 'ru' | 'en'): string {
+  const id = contentSeason(save);
+  const def = SEASONS.find((s) => s.season === id) ?? SEASONS[0];
+  return lang === 'ru' ? def.name.ru : def.name.en;
+}
+
+/** Streak bonus for playing daily on consecutive days. Call with today's key. */
+export function streakBonus(save: SaveData, today: string): number {
+  const st = save.streak;
+  if (!st.lastDate) return 0;
+  const prev = new Date(st.lastDate + 'T00:00:00Z').getTime();
+  const now = new Date(today + 'T00:00:00Z').getTime();
+  const diffDays = Math.round((now - prev) / 86400000);
+  if (diffDays === 1) return Math.min(st.count + 1, 7) * CONFIG.streakBonusPerDay;
+  return 0;
+}
+
+export function registerStreak(save: SaveData, today: string): number {
+  const st = save.streak;
+  if (st.lastDate === today) return 0;
+  const bonus = streakBonus(save, today);
+  const prev = st.lastDate ? new Date(st.lastDate + 'T00:00:00Z').getTime() : NaN;
+  const now = new Date(today + 'T00:00:00Z').getTime();
+  st.count = Number.isFinite(prev) && Math.round((now - prev) / 86400000) === 1 ? st.count + 1 : 1;
+  st.lastDate = today;
+  return bonus;
+}

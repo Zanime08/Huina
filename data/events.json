@@ -30,5 +30,13 @@
   { "id": "ev_reset", "weight": 2, "minDay": 7, "kind": "legend", "target": "all", "hype": 25,
     "text": { "ru": "🌌 ВЕЛИКИЙ МЕМ-РЕСЕТ! Всем +25, кринж прощён!", "en": "🌌 THE GREAT MEME RESET! All +25, cringe forgiven!" } },
   { "id": "ev_monday", "weight": 5, "minDay": 2, "kind": "bad", "target": "all", "hype": -8,
-    "text": { "ru": "😮‍💨 Понедельник. Никто ничего не лайкает: всем −8", "en": "😮‍💨 Monday. Nobody likes anything: all −8" } }
+    "text": { "ru": "😮‍💨 Понедельник. Никто ничего не лайкает: всем −8", "en": "😮‍💨 Monday. Nobody likes anything: all −8" } },
+  { "id": "ev_sept1", "weight": 6, "minDay": 1, "kind": "good", "target": "random", "hype": 20,
+    "text": { "ru": "🎒 1 сентября! Школьники вернулись в сеть: {meme} +20", "en": "🎒 Sept 1st! Kids are back online: {meme} +20" } },
+  { "id": "ev_heating", "weight": 5, "minDay": 3, "kind": "good", "target": "all", "hype": 10,
+    "text": { "ru": "🔥 Дали отопление! Все сидят дома и скроллят: всем +10", "en": "🔥 Heating is on! Everyone scrolls from home: all +10" } },
+  { "id": "ev_aigymn", "weight": 4, "minDay": 5, "kind": "neutral", "target": "random", "hype": 15, "cash": 25,
+    "text": { "ru": "🤖 Нейросеть сочинила гимн {meme}: +15 хайпа, +25 монет роялти", "en": "🤖 AI composed an anthem for {meme}: +15 hype, +25 royalty coins" } },
+  { "id": "ev_halloween", "weight": 4, "minDay": 6, "kind": "good", "target": "lowest", "hype": 34,
+    "text": { "ru": "🎃 Хэллоуин-тизеры! Аутсайдер {meme} воскрес: +34", "en": "🎃 Halloween teasers! Underdog {meme} resurrected: +34" } }
 ]

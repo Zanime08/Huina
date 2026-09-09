@@ -95,10 +95,10 @@ describe('game smoke flow', () => {
   it('collection, achievements, settings render; lang switch works', () => {
     game.showMenu();
     click(qa('.btn-row')[1].querySelectorAll('.btn')[0]); // collection
-    expect(qa('.coll-item').length).toBe(12);
+    expect(qa('.coll-item').length).toBe(18);
     game.showMenu();
     click(qa('.btn-row')[1].querySelectorAll('.btn')[1]); // achievements
-    expect(qa('.ach').length).toBe(12);
+    expect(qa('.ach').length).toBe(13);
     game.showMenu();
     click(qa('.btn-row')[1].querySelectorAll('.btn')[2]); // settings
     const sel = q<HTMLSelectElement>('select');

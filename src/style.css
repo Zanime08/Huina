@@ -218,3 +218,19 @@ select, .seg { background: var(--card); color: var(--text); border: 1px solid va
   .meme-tag { display: none; }
   .spark { display: none; }
 }
+.goal-row { display: flex; align-items: center; gap: 8px; }
+.goal-label { font-size: 11px; font-weight: 800; color: var(--warn); white-space: nowrap; }
+.goal-bar { flex: 1; height: 8px; background: var(--card); border-radius: 99px; overflow: hidden; border: 1px solid var(--line); }
+.goal-bar > div { height: 100%; width: 0%; border-radius: 99px; background: linear-gradient(90deg, var(--warn), var(--good)); transition: width .3s; }
+.day-banner { position: fixed; inset: 0; z-index: 40; pointer-events: none; align-items: center; justify-content: center; font-size: 52px; font-weight: 900; letter-spacing: 2px; color: #fff; text-shadow: 0 0 30px var(--accent), 0 2px 0 #000; opacity: 0; }
+.day-banner.show { animation: banner 1.3s ease forwards; }
+@keyframes banner { 0% { opacity: 0; transform: scale(1.4); } 20% { opacity: 1; transform: scale(1); } 70% { opacity: 1; } 100% { opacity: 0; transform: scale(.95); } }
+.flash-up { animation: fup .5s; }
+.flash-down { animation: fdown .5s; }
+@keyframes fup { 0% { color: var(--good); transform: scale(1.25); } 100% { transform: scale(1); } }
+@keyframes fdown { 0% { color: var(--bad); transform: scale(.85); } 100% { transform: scale(1); } }
+.cos-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; }
+.cos-item { background: var(--card); border: 2px solid var(--line); border-radius: 12px; padding: 10px; text-align: center; }
+.cos-item.active { border-color: var(--good); }
+.cos-swatch { height: 26px; border-radius: 8px; margin-bottom: 6px; }
+.cos-name { font-weight: 800; font-size: 13px; }

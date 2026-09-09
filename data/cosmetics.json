@@ -1,0 +1,12 @@
+[
+  { "id": "neon", "cost": 0, "accent": "#ff3df0", "accent2": "#3df0ff",
+    "name": { "ru": "Неон", "en": "Neon" } },
+  { "id": "gold", "cost": 400, "accent": "#ffd23d", "accent2": "#ff8a3d",
+    "name": { "ru": "Золото", "en": "Gold" } },
+  { "id": "toxic", "cost": 700, "accent": "#3dffa0", "accent2": "#c6ff3d",
+    "name": { "ru": "Токсик", "en": "Toxic" } },
+  { "id": "ice", "cost": 700, "accent": "#3df0ff", "accent2": "#b8c8ff",
+    "name": { "ru": "Лёд", "en": "Ice" } },
+  { "id": "shadow", "cost": 1100, "accent": "#8a3dff", "accent2": "#ff3d7a",
+    "name": { "ru": "Тень", "en": "Shadow" } }
+]

@@ -2,6 +2,7 @@ import { el, fmt, fmtSigned, toast } from '../helpers';
 import { i18n } from '../i18n';
 import { audio } from '../../audio/audioManager';
 import { saveManager } from '../../meta/saveManager';
+import { analytics } from '../../meta/analytics';
 import { seasonResult, SeasonState } from '../../sim/seasonSim';
 import { rewardForResult } from '../../sim/economy';
 import type { IPlatform, LeaderboardEntry } from '../../platform/IPlatform';
@@ -53,6 +54,7 @@ export class ResultsScreen {
       audio.click();
       x2.disabled = true;
       const ok = await this.ads.showRewarded();
+      analytics.event('ad_rewarded', { place: 'x2', ok });
       if (ok) {
         this.x2used = true;
         saveManager.addCoins(baseReward); // second half of x2 (first already granted)
@@ -77,6 +79,7 @@ export class ResultsScreen {
     const share = el('button', 'btn ghost small', i18n.t('results_share'));
     share.onclick = async () => {
       audio.click();
+      analytics.event('share');
       const text = i18n.t('share_text', { p: fmt(profit), s: stars });
       const ok = await this.platform.share(text);
       toast(ok ? i18n.t('share_copied') : text, ok ? 'gold' : '');
@@ -97,7 +100,10 @@ export class ResultsScreen {
     setTimeout(() => {
       if (this.ads.canShowInterstitial()) {
         audio.stopMusic();
-        void this.ads.showInterstitial().finally(() => audio.applySettings());
+        void this.ads.showInterstitial().then((shown) => {
+          analytics.event('ad_interstitial', { shown });
+          audio.applySettings();
+        });
       }
     }, 1200);
   }

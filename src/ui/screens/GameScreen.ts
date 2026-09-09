@@ -1,8 +1,9 @@
-import { CONFIG } from '../../config';
+import { CONFIG, Phase } from '../../config';
 import { el, fmt, fmtSigned, toast, modal, avatarSVG, drawSpark } from '../helpers';
 import { i18n } from '../i18n';
 import { audio } from '../../audio/audioManager';
 import { saveManager } from '../../meta/saveManager';
+import { analytics } from '../../meta/analytics';
 import { memeById } from '../../sim/memeRegistry';
 import {
   SeasonState, SimCtx, MemeState, tickSeason, buyMeme, sellMeme, boostMeme,
@@ -29,6 +30,8 @@ interface CardRefs {
   sell: HTMLButtonElement;
   sellHalf: HTMLButtonElement;
   boost: HTMLButtonElement;
+  prevPhase: Phase;
+  prevPrice: number;
 }
 
 export class GameScreen {
@@ -40,9 +43,11 @@ export class GameScreen {
   private cards: CardRefs[] = [];
   private listEl: HTMLElement;
   private dayEl: HTMLElement; private dayFill: HTMLElement;
+  private goalFill: HTMLElement; private goalLabel: HTMLElement;
   private cashEl: HTMLElement; private profitEl: HTMLElement; private energyEl: HTMLElement;
   private tickerEl: HTMLElement; private tickerText: HTMLElement;
   private insiderEl: HTMLElement;
+  private bannerEl: HTMLElement;
   private paused = false;
   private destroyed = false;
   private tutStep = 0; // 0 off, 1 farm, 2 sell, 3 done-hints
@@ -80,6 +85,12 @@ export class GameScreen {
     this.profitEl = mk(i18n.t('hud_profit'));
     this.energyEl = mk('⚡');
     hud.append(top, stats);
+    // goal progress
+    const goalRow = el('div', 'goal-row');
+    this.goalLabel = el('div', 'goal-label', '');
+    const goalBar = el('div', 'goal-bar'); this.goalFill = el('div'); goalBar.appendChild(this.goalFill);
+    goalRow.append(this.goalLabel, goalBar);
+    hud.appendChild(goalRow);
     root.appendChild(hud);
 
     // Ticker
@@ -98,6 +109,11 @@ export class GameScreen {
     root.appendChild(this.listEl);
     this.rebuildCards();
 
+    // day banner overlay
+    this.bannerEl = el('div', 'day-banner', '');
+    this.bannerEl.style.display = 'none';
+    root.appendChild(this.bannerEl);
+
     // tutorial
     if (!saveManager.data.tutorialDone) {
       this.tutStep = 1;
@@ -109,6 +125,7 @@ export class GameScreen {
     window.addEventListener('keydown', this.onKey);
     this.root = root;
     this.last = performance.now();
+    this.showDayBanner(1);
     this.loop(this.last);
     this.refreshNews(true);
   }
@@ -126,6 +143,16 @@ export class GameScreen {
       else this.doFarm(n - 1);
     }
   };
+
+  private showDayBanner(day: number): void {
+    this.bannerEl.textContent = i18n.t('day_banner', { n: day });
+    this.bannerEl.style.display = 'flex';
+    // restart CSS animation
+    this.bannerEl.classList.remove('show');
+    void this.bannerEl.offsetWidth;
+    this.bannerEl.classList.add('show');
+    setTimeout(() => { if (!this.destroyed) this.bannerEl.style.display = 'none'; }, 1400);
+  }
 
   private rebuildCards(): void {
     this.listEl.innerHTML = '';
@@ -168,7 +195,7 @@ export class GameScreen {
       actions.append(farm, sellHalf, sell, boost);
       card.append(head, hypeRow, econ, spark, actions);
       this.listEl.appendChild(card);
-      this.cards.push({ root: card, phase, fill, num, trend, price: priceV, stake: stakeV, spark, farm, sell, sellHalf, boost });
+      this.cards.push({ root: card, phase, fill, num, trend, price: priceV, stake: stakeV, spark, farm, sell, sellHalf, boost, prevPhase: m.phase, prevPrice: m.price });
     });
     this.applyTutGlow();
   }
@@ -206,6 +233,7 @@ export class GameScreen {
       this.tutStep = 3;
       saveManager.data.tutorialDone = true;
       saveManager.saveAll();
+      analytics.event('tutorial_complete');
       toast(i18n.t('tut_boost'), 'gold', 3500);
       setTimeout(() => { if (!this.destroyed) toast(i18n.t('tut_goal', { n: fmt(this.s.opts.goal) })); }, 3600);
       this.applyTutGlow();
@@ -250,6 +278,7 @@ export class GameScreen {
   private async bailout(): Promise<void> {
     audio.click();
     const ok = await this.ads.showRewarded();
+    analytics.event('ad_rewarded', { place: 'bailout', ok });
     if (ok) {
       this.s.cash = Math.round((this.s.cash + 60) * 10) / 10;
       toast(i18n.t('toast_reward', { n: 60 }), 'gold');
@@ -278,6 +307,7 @@ export class GameScreen {
         audio.dayTick();
         this.newsIdx = 0;
         this.rebuildCards();
+        this.showDayBanner(this.s.day);
         this.refreshNews(true);
         this.checkCollection();
         this.maybeBailout();
@@ -285,6 +315,7 @@ export class GameScreen {
         this.refreshNews(false);
       }
       this.update();
+      this.checkMilestones();
       if (this.s.over) {
         this.cb.onFinish(this.s);
         return;
@@ -292,6 +323,30 @@ export class GameScreen {
     }
     this.raf = requestAnimationFrame(this.loop);
   };
+
+  /** Phase-transition celebrations / warnings (toast + sound, throttled by transition itself). */
+  private checkMilestones(): void {
+    this.s.memes.forEach((m, i) => {
+      const c = this.cards[i];
+      if (!c || m.phase === c.prevPhase) return;
+      const def = memeById.get(m.defId);
+      const name = def ? (i18n.lang === 'ru' ? def.name.ru : def.name.en) : m.defId;
+      const from = c.prevPhase;
+      c.prevPhase = m.phase;
+      if (m.phase === 'viral' && (from === 'fresh' || from === 'rising')) {
+        toast(i18n.t('ms_viral', { t: name }));
+        audio.newsGood();
+      } else if (m.phase === 'peak') {
+        toast(i18n.t('ms_peak', { t: name }), 'gold');
+        audio.legend();
+      } else if (m.phase === 'cringe' && m.stake > 0) {
+        toast(i18n.t('ms_cringe', { t: name }), 'bad');
+        audio.newsBad();
+      } else if (m.phase === 'dead') {
+        toast(i18n.t('ms_dead', { t: name }), m.stake > 0 ? 'bad' : '');
+      }
+    });
+  }
 
   private refreshNews(force: boolean): void {
     const key = `${this.s.day}:${this.newsIdx}`;
@@ -356,6 +411,9 @@ export class GameScreen {
     this.profitEl.textContent = fmtSigned(profit);
     this.profitEl.className = `v ${profit >= 0 ? 'good' : 'bad'}`;
     this.energyEl.textContent = `⚡${s.energy}`;
+    const pct = Math.max(0, Math.min(1, profit / s.opts.goal));
+    this.goalFill.style.width = `${pct * 100}%`;
+    this.goalLabel.textContent = `🎯 ${fmt(Math.max(0, Math.round(profit)))}/${fmt(s.opts.goal)}`;
 
     s.memes.forEach((m, i) => {
       const c = this.cards[i];
@@ -367,6 +425,13 @@ export class GameScreen {
       c.num.textContent = `${Math.round(m.hype)}`;
       c.trend.textContent = m.dead ? '✖' : m.trend > 1.2 ? '▲' : m.trend < -1.2 ? '▼' : '•';
       c.trend.style.color = m.trend > 1.2 ? 'var(--good)' : m.trend < -1.2 ? 'var(--bad)' : 'var(--muted)';
+      // price flash on change
+      if (m.price !== c.prevPrice) {
+        c.price.classList.remove('flash-up', 'flash-down');
+        void c.price.offsetWidth;
+        c.price.classList.add(m.price > c.prevPrice ? 'flash-up' : 'flash-down');
+        c.prevPrice = m.price;
+      }
       c.price.textContent = `🪙${fmt(m.price)}`;
       const stakeVal = m.stake * m.price;
       c.stake.textContent = `${m.stake} (≈${fmt(stakeVal)})`;

@@ -2,10 +2,12 @@
 import './style.css';
 import { Game } from './core/Game';
 import { saveManager } from './meta/saveManager';
+import { analytics } from './meta/analytics';
 import { MockPlatform } from './platform/MockPlatform';
 import { YandexPlatform } from './platform/YandexPlatform';
 import type { IPlatform } from './platform/IPlatform';
 import { audio } from './audio/audioManager';
+import { applyCosmetic } from './ui/cosmetics';
 
 function setBoot(pct: number, text: string): void {
   const fill = document.getElementById('bootFill');
@@ -14,7 +16,18 @@ function setBoot(pct: number, text: string): void {
   if (t) t.textContent = text;
 }
 
+// Global error boundary: never die silently, never show stack to players.
+window.addEventListener('error', (e) => {
+  console.error('[fatal]', e.message, e.filename, e.lineno);
+  try { analytics.event('js_error', { msg: String(e.message).slice(0, 120) }); } catch { /* noop */ }
+});
+window.addEventListener('unhandledrejection', (e) => {
+  console.error('[unhandled]', e.reason);
+  try { analytics.event('js_error', { msg: String(e.reason).slice(0, 120) }); } catch { /* noop */ }
+});
+
 async function boot(): Promise<void> {
+  analytics.configure();
   setBoot(15, 'SDK…');
   let platform: IPlatform;
   try {
@@ -38,6 +51,7 @@ async function boot(): Promise<void> {
   await saveManager.loadCloud();
 
   setBoot(70, 'Audio…');
+  applyCosmetic();
   const unlockOnce = () => {
     audio.unlock();
     audio.applySettings();
@@ -52,9 +66,9 @@ async function boot(): Promise<void> {
   game.applyLang();
   (window as unknown as { __game?: Game }).__game = game;
 
-  // Yandex draft preview support: ?playtest param etc. — nothing special needed.
   game.showMenu();
   platform.loadingReady();
+  analytics.event('game_start', { platform: platform.isReal ? 'yandex' : 'mock' });
 
   // Service worker (offline requirement) — register after first paint
   if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {

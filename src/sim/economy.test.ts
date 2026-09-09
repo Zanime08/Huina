@@ -47,3 +47,37 @@ describe('economy', () => {
     expect(upgradeCost('slots', 2)).toBeNull();
   });
 });
+
+describe('content season & streak', () => {
+  it('content season unlocks after 4 seasons', async () => {
+    const { contentSeason } = await import('./economy');
+    const d = defaultSave();
+    expect(contentSeason(d)).toBe(1);
+    d.seasonsPlayed = 3;
+    expect(contentSeason(d)).toBe(1);
+    d.seasonsPlayed = 4;
+    expect(contentSeason(d)).toBe(2);
+    d.seasonsPlayed = 99;
+    expect(contentSeason(d)).toBe(2);
+  });
+
+  it('streak registers consecutive days and pays bonus', async () => {
+    const { registerStreak, streakBonus } = await import('./economy');
+    const d = defaultSave();
+    expect(registerStreak(d, '2026-09-09')).toBe(0); // first day
+    expect(d.streak.count).toBe(1);
+    expect(registerStreak(d, '2026-09-09')).toBe(0); // same day, no-op
+    expect(streakBonus(d, '2026-09-10')).toBe(30); // 2nd day: 2*15
+    expect(registerStreak(d, '2026-09-10')).toBe(30);
+    expect(d.streak.count).toBe(2);
+    expect(registerStreak(d, '2026-09-12')).toBe(0); // gap → reset
+    expect(d.streak.count).toBe(1);
+  });
+
+  it('migrates v1 saves to v2 with defaults', () => {
+    const d = defaultSave();
+    expect(d.saveVersion).toBe(2);
+    expect(d.cosmetics).toEqual({ owned: ['neon'], active: 'neon' });
+    expect(d.streak).toEqual({ count: 0, lastDate: '' });
+  });
+});

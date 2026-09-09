@@ -8,8 +8,8 @@
 ```bash
 npm install
 npm run dev      # http://localhost:3000
-npm test         # 22 теста: sim / economy / balance / smoke
-npm run build    # production в dist/ (~84 КБ)
+npm test         # 25 тестов: sim / economy / balance / smoke
+npm run build    # production в dist/ (~92 КБ)
 ```
 
 Debug-панель (только dev): `http://localhost:3000/?debug=1`

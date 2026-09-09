@@ -4,14 +4,15 @@ import { mulberry32 } from './rng';
 import { CONFIG } from '../config';
 import { MEMES, EVENTS, ACHIEVEMENTS, poolForSeason } from '../sim/memeRegistry';
 import { createSeason, seasonResult, SeasonState, SimCtx } from '../sim/seasonSim';
-import { upgradeEffects, goalForSeason, seasonNumber, rewardForResult } from '../sim/economy';
+import { upgradeEffects, goalForSeason, seasonNumber, rewardForResult, contentSeason, contentSeasonName, registerStreak } from '../sim/economy';
 import { saveManager } from '../meta/saveManager';
 import { checkSeasonAchievements, unlock } from '../meta/achievements';
 import { dailySeed, todayKey } from '../meta/daily';
+import { analytics } from '../meta/analytics';
 import type { IPlatform } from '../platform/IPlatform';
 import { AdsService } from '../platform/AdsService';
 import { i18n } from '../ui/i18n';
-import { el, toast, modal } from '../ui/helpers';
+import { el, toast, modal, fmt } from '../ui/helpers';
 import { MenuScreen } from '../ui/screens/MenuScreen';
 import { GameScreen } from '../ui/screens/GameScreen';
 import { ResultsScreen } from '../ui/screens/ResultsScreen';
@@ -63,6 +64,13 @@ export class Game {
     }
     this.platform.gameplayStop();
     audio.applySettings();
+    // content-season unlock celebration
+    const cs = contentSeason(saveManager.data);
+    if (cs > 1 && !saveManager.data.achievements.includes(`cs_seen_${cs}`)) {
+      saveManager.data.achievements.push(`cs_seen_${cs}`);
+      saveManager.saveAll();
+      setTimeout(() => toast(i18n.t('season2_unlocked', { t: contentSeasonName(saveManager.data, i18n.lang) }), 'gold', 4000), 400);
+    }
     this.show(new MenuScreen(this.platform, {
       onPlay: () => this.startSeason('normal'),
       onDaily: () => this.startDaily(),
@@ -92,7 +100,9 @@ export class Game {
     const seed = mode === 'daily' ? dailySeed(this.platform.serverTime()) : (Math.random() * 2 ** 31) | 0;
     const rng = mulberry32(seed);
     const goal = mode === 'daily' ? CONFIG.goalProfit : goalForSeason(seasonNumber(d));
-    const state = createSeason(poolForSeason(CONFIG.season), EVENTS, {
+    const cs = mode === 'daily' ? 1 + (dailySeed(this.platform.serverTime()) % CONFIG.maxSeason) : contentSeason(d);
+    analytics.event('season_start', { mode, goal, contentSeason: cs });
+    const state = createSeason(poolForSeason(cs), EVENTS, {
       slots: fx.slots,
       startCash: fx.startCash,
       maxEnergy: fx.maxEnergy,
@@ -129,7 +139,13 @@ export class Game {
     let reward = rewardForResult(won, stars);
     if (isDaily) {
       reward += CONFIG.dailyBonus;
-      d.dailyDate = todayKey(this.platform.serverTime());
+      const today = todayKey(this.platform.serverTime());
+      d.dailyDate = today;
+      const streakBonus = registerStreak(d, today);
+      if (streakBonus > 0) {
+        reward += streakBonus;
+        setTimeout(() => toast(i18n.t('streak_bonus', { n: fmt(streakBonus) }), 'gold'), 800);
+      }
       unlock('daily');
     } else {
       d.seasonsPlayed += 1;
@@ -140,8 +156,6 @@ export class Game {
         if (profit > d.dailyBest) { d.dailyBest = Math.round(profit); newBest = true; }
       } else {
         if (profit > d.best) { d.best = Math.round(profit); newBest = true; }
-        const week = todayKey(this.platform.serverTime()).slice(0, 7);
-        void week;
         if (profit > d.bestWeek) d.bestWeek = Math.round(profit);
       }
     }
@@ -150,6 +164,7 @@ export class Game {
     if (s.stats.burmaldaSeen) d.stats.burmaldaSeen = true;
     saveManager.addCoins(reward);
     saveManager.saveAll(true);
+    analytics.event('season_end', { mode: this.mode, won, stars, profit: Math.round(profit), quit });
 
     // platform: leaderboard submit (only meaningful scores)
     if (!quit && won && profit > 0) {
@@ -157,14 +172,13 @@ export class Game {
       void this.platform.submitScore(board, profit);
     }
 
-    const fresh = checkSeasonAchievements(s);
-    void fresh;
+    checkSeasonAchievements(s);
 
     this.show(new ResultsScreen(s, this.platform, this.ads, isDaily, newBest, {
       onRetry: () => {
+        analytics.event('retry', { mode: this.mode });
         if (isDaily) this.showMenu(); // daily: one shot
         else {
-          // RESULTS → PLAYING is allowed; go back through MENU state internally
           this.sm.go('MENU');
           this.startSeason('normal');
         }

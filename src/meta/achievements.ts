@@ -34,6 +34,7 @@ export function checkSeasonAchievements(s: SeasonState): string[] {
   if (won && s.stats.daysInRed >= 3 && need('comeback')) got.push('comeback');
   if (d.collection.length >= 6 && need('collector6')) got.push('collector6');
   if (d.collection.length >= 12 && need('collector12')) got.push('collector12');
+  if (d.collection.length >= 18 && need('collector18')) got.push('collector18');
   void profit;
 
   for (const id of got) unlock(id);

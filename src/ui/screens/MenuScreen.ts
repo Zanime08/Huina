@@ -1,7 +1,8 @@
 import { el, fmt, fmtSigned } from '../helpers';
 import { i18n } from '../i18n';
 import { saveManager } from '../../meta/saveManager';
-import { goalForSeason, seasonNumber, studioTier, STUDIO_EMOJI } from '../../sim/economy';
+import { goalForSeason, seasonNumber, studioTier, STUDIO_EMOJI, contentSeason, contentSeasonName } from '../../sim/economy';
+import { SEASONS } from '../../sim/memeRegistry';
 import { audio } from '../../audio/audioManager';
 import type { IPlatform } from '../../platform/IPlatform';
 
@@ -24,15 +25,21 @@ export class MenuScreen {
     const goal = goalForSeason(seasonNumber(d));
     const tier = studioTier(d);
     const studioNames = i18n.arr('upg_studio_names');
+    const cs = contentSeason(d);
+    const seasonLabel = i18n.t('menu_season_fmt', { n: seasonNumber(d), t: contentSeasonName(d, i18n.lang) });
 
     const root = el('div', 'screen');
     root.appendChild(el('h1', 'logo', 'HYPE<br/>FACTORY'));
     root.appendChild(el('p', 'subtitle', i18n.t('app_subtitle')));
 
     const studio = el('div', 'studio-visual');
+    let extra = '';
+    if (d.streak.count > 0) extra += `<div>${i18n.t('menu_streak', { n: d.streak.count })}</div>`;
+    const next = SEASONS.find((s) => s.season === cs + 1);
+    if (next) extra += `<div class="muted" style="font-size:12px">${i18n.t('next_season_pool', { n: next.unlockAfter - d.seasonsPlayed })}</div>`;
     studio.innerHTML = `<div class="studio-emoji">${STUDIO_EMOJI[tier]}</div>
-      <div><b>${studioNames[tier] ?? ''}</b> · ${i18n.t('menu_season')}</div>
-      <div>🎯 ${i18n.t('menu_goal', { n: fmtSigned(goal) })} · ⭐ ${i18n.t('menu_best')}: <b>${fmt(d.best)}</b></div>`;
+      <div><b>${studioNames[tier] ?? ''}</b> · ${seasonLabel}</div>
+      <div>🎯 ${i18n.t('menu_goal', { n: fmtSigned(goal) })} · ⭐ ${i18n.t('menu_best')}: <b>${fmt(d.best)}</b></div>${extra}`;
     root.appendChild(studio);
 
     const play = el('button', 'btn primary', i18n.t('menu_play'));
@@ -50,7 +57,8 @@ export class MenuScreen {
     const row2 = el('div', 'btn-row');
     const coll = el('button', 'btn ghost small', i18n.t('menu_collection'));
     coll.onclick = () => { audio.unlock(); audio.click(); cb.onCollection(); };
-    const ach = el('button', 'btn ghost small', `${i18n.t('menu_achievements')} ${d.achievements.length}/12`);
+    const achCount = d.achievements.filter((x) => !x.startsWith('cs_seen_')).length;
+    const ach = el('button', 'btn ghost small', `${i18n.t('menu_achievements')} ${achCount}/13`);
     ach.onclick = () => { audio.unlock(); audio.click(); cb.onAchievements(); };
     const set = el('button', 'btn ghost small', i18n.t('menu_settings'));
     set.onclick = () => { audio.unlock(); audio.click(); cb.onSettings(); };

@@ -1,5 +1,6 @@
 // DEV-ONLY debug panel (?debug=1). Dynamically imported, tree-shaken from prod.
 import { saveManager } from '../meta/saveManager';
+import { analytics } from '../meta/analytics';
 import { el } from '../ui/helpers';
 import type { Game } from '../core/Game';
 import type { IPlatform } from '../platform/IPlatform';
@@ -41,18 +42,32 @@ export function attachDebug(game: Game, platform: IPlatform): void {
     saveManager.saveAll(true);
     game.showMenu();
   });
+  btn('seasonsPlayed=4 (S2)', () => {
+    saveManager.data.seasonsPlayed = 4;
+    saveManager.saveAll(true);
+    game.showMenu();
+  });
+  btn('show analytics log', () => {
+    alert(analytics.log.map((e) => `${e.name} ${JSON.stringify(e.params ?? {})}`).join('\n') || '(empty)');
+  });
   btn('toggle ad fail', () => {
     if (platform instanceof MockPlatform) {
       platform.simulateAdFail = !platform.simulateAdFail;
       alert('simulateAdFail=' + platform.simulateAdFail);
     } else alert('real platform');
   });
-  btn('corrupt save+reload', () => {
+  btn('corrupt main (bak restore)', () => {
     localStorage.setItem('hype_factory_save_v1', '{broken json!!!');
+    location.reload();
+  });
+  btn('corrupt both+reload', () => {
+    localStorage.setItem('hype_factory_save_v1', '{broken!!!');
+    localStorage.setItem('hype_factory_save_bak', '{broken!!!');
     location.reload();
   });
   btn('clear save+reload', () => {
     localStorage.removeItem('hype_factory_save_v1');
+    localStorage.removeItem('hype_factory_save_bak');
     location.reload();
   });
   btn('toggle lang', () => {
