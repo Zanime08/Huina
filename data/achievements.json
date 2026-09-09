@@ -1,0 +1,14 @@
+[
+  { "id": "first_profit", "reward": 30, "name": { "ru": "Первые деньги", "en": "First money" }, "desc": { "ru": "Заверши сезон в плюсе", "en": "Finish a season in profit" }, "icon": "💰" },
+  { "id": "peak_seller", "reward": 50, "name": { "ru": "Снайпер пика", "en": "Peak sniper" }, "desc": { "ru": "Продай мем на хайпе 90+", "en": "Sell a meme at hype 90+" }, "icon": "🎯" },
+  { "id": "triple_star", "reward": 80, "name": { "ru": "Три звезды", "en": "Three stars" }, "desc": { "ru": "Возьми 3 звезды за сезон", "en": "Get 3 stars in a season" }, "icon": "⭐" },
+  { "id": "crash_survivor", "reward": 40, "name": { "ru": "Держал до конца", "en": "Held to zero" }, "desc": { "ru": "Мем умер, пока ты его держал", "en": "A meme died while you held it" }, "icon": "💀" },
+  { "id": "burmalda", "reward": 60, "name": { "ru": "Свидетель Бурмалды", "en": "Burmalda witness" }, "desc": { "ru": "Переживи пробуждение Бурмалды", "en": "Survive the Burmalda awakening" }, "icon": "🌀" },
+  { "id": "collector6", "reward": 50, "name": { "ru": "Коллекционер", "en": "Collector" }, "desc": { "ru": "Открой 6 мемов", "en": "Discover 6 memes" }, "icon": "📚" },
+  { "id": "collector12", "reward": 120, "name": { "ru": "Архивариус мемов", "en": "Meme archivist" }, "desc": { "ru": "Открой все 12 мемов", "en": "Discover all 12 memes" }, "icon": "🏛️" },
+  { "id": "rich", "reward": 60, "name": { "ru": "Мем-магнат", "en": "Meme mogul" }, "desc": { "ru": "Накопи 1000 монет за сезон", "en": "Hold 1000 coins in a season" }, "icon": "🤑" },
+  { "id": "booster", "reward": 35, "name": { "ru": "Кофеиновый", "en": "Caffeinated" }, "desc": { "ru": "Используй BOOST 15 раз за сезон", "en": "Use BOOST 15 times in a season" }, "icon": "⚡" },
+  { "id": "daily", "reward": 40, "name": { "ru": "Режим дня", "en": "Daily grind" }, "desc": { "ru": "Сыграй Daily Challenge", "en": "Play the Daily Challenge" }, "icon": "📅" },
+  { "id": "niche", "reward": 45, "name": { "ru": "Нишевость", "en": "Niche" }, "desc": { "ru": "Заработай на меме с хайпом ниже 20", "en": "Profit on a meme with hype under 20" }, "icon": "🎩" },
+  { "id": "comeback", "reward": 70, "name": { "ru": "Камбэк", "en": "Comeback" }, "desc": { "ru": "Выиграй сезон после 3 дней в минусе", "en": "Win a season after 3 days in the red" }, "icon": "🚀" }
+]
