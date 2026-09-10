@@ -203,7 +203,10 @@
     "text": {
       "ru": "🎒 1 сентября! Школьники вернулись в сеть: {meme} +20",
       "en": "🎒 Sept 1st! Kids are back online: {meme} +20"
-    }
+    },
+    "months": [
+      9
+    ]
   },
   {
     "id": "ev_heating",
@@ -215,7 +218,14 @@
     "text": {
       "ru": "🔥 Дали отопление! Все сидят дома и скроллят: всем +10",
       "en": "🔥 Heating is on! Everyone scrolls from home: all +10"
-    }
+    },
+    "months": [
+      10,
+      11,
+      12,
+      1,
+      2
+    ]
   },
   {
     "id": "ev_aigymn",
@@ -240,7 +250,10 @@
     "text": {
       "ru": "🎃 Хэллоуин-тизеры! Аутсайдер {meme} воскрес: +34",
       "en": "🎃 Halloween teasers! Underdog {meme} resurrected: +34"
-    }
+    },
+    "months": [
+      10
+    ]
   },
   {
     "id": "ev_puhosos",
@@ -264,6 +277,22 @@
     "text": {
       "ru": "🎤 Нейро-кавер на {meme} взорвал чарты! +26",
       "en": "🎤 A neuro-cover of {meme} tops the charts! +26"
+    }
+  },
+  {
+    "id": "ev_ny",
+    "weight": 6,
+    "minDay": 2,
+    "kind": "good",
+    "target": "all",
+    "hype": 15,
+    "months": [
+      12,
+      1
+    ],
+    "text": {
+      "ru": "🎄 Новогодняя суета: все скроллят мемы вместо работы: всем +15",
+      "en": "🎄 Holiday rush: everyone scrolls memes instead of working: +15 to all"
     }
   }
 ]

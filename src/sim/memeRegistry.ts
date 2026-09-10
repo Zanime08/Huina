@@ -30,6 +30,8 @@ export interface EventDef {
   hype: number;
   cash?: number;
   energy?: number;
+  /** Months (1–12) this event can fire in; empty/absent = always in rotation. */
+  months?: number[];
   text: { ru: string; en: string };
 }
 

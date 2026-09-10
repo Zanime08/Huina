@@ -22,6 +22,7 @@ export class ResultsScreen {
     private platform: IPlatform,
     private ads: AdsService,
     private isDaily: boolean,
+    private isWeekly: boolean,
     private newBest: boolean,
     private cb: ResultsCallbacks,
   ) {
@@ -104,7 +105,7 @@ export class ResultsScreen {
     const lbList = el('div', '', `<span class="muted">${i18n.t('loading')}</span>`);
     lbCard.appendChild(lbList);
     root.appendChild(lbCard);
-    void this.loadBoard(lbList);
+    void this.loadBoard(lbList, lbCard);
 
     this.root = root;
 
@@ -120,14 +121,22 @@ export class ResultsScreen {
     }, 1200);
   }
 
-  private async loadBoard(list: HTMLElement): Promise<void> {
+  private async loadBoard(list: HTMLElement, card: HTMLElement): Promise<void> {
     try {
-      const board = this.isDaily ? 'hype_daily_profit' : 'hype_season_profit';
+      const board = this.isDaily ? 'hype_daily_profit' : this.isWeekly ? 'hype_weekly_profit' : 'hype_season_profit';
       const entries: LeaderboardEntry[] = await this.platform.getBoard(board);
       list.innerHTML = '';
       if (entries.length === 0) {
         list.appendChild(el('div', 'muted', i18n.t('lb_empty')));
         return;
+      }
+      // tournament emotions: your place in the weekly standings
+      if (this.isWeekly) {
+        const me = entries.find((e) => e.isPlayer);
+        if (me && me.rank > 0) {
+          const medal = me.rank <= 3 ? ['🥇', '🥈', '🥉'][me.rank - 1] : '🏁';
+          card.appendChild(el('div', 'center', `${medal} ${i18n.t('weekly_rank', { n: me.rank })}`));
+        }
       }
       entries.slice(0, 5).forEach((e, i) => {
         const medal = i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : `${e.rank || i + 1}.`;

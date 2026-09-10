@@ -28,7 +28,9 @@ export class MockPlatform implements IPlatform {
   async cloudLoad(): Promise<unknown> { return null; }
   async cloudSave(): Promise<void> { /* noop */ }
   async submitScore(): Promise<void> { /* noop */ }
-  async getBoard(): Promise<LeaderboardEntry[]> { return []; }
+  /** Fill in tests/QA to emulate a populated leaderboard. */
+  mockBoard: LeaderboardEntry[] = [];
+  async getBoard(): Promise<LeaderboardEntry[]> { return this.mockBoard; }
   async auth(): Promise<string | null> { return 'Тестер'; }
   isAuthorized(): boolean { return true; }
   gameplayStart(): void { /* noop */ }

@@ -40,9 +40,12 @@ export function shuffle<T>(rng: Rng, arr: T[]): T[] {
 export function weighted<T>(rng: Rng, items: readonly T[], weight: (t: T) => number): T {
   let total = 0;
   for (const it of items) total += Math.max(0, weight(it));
+  if (total <= 0) return items[items.length - 1];
   let r = rng() * total;
   for (const it of items) {
-    r -= Math.max(0, weight(it));
+    const w = Math.max(0, weight(it));
+    if (w <= 0) continue; // zero-weight (e.g. out-of-season) events are never picked
+    r -= w;
     if (r <= 0) return it;
   }
   return items[items.length - 1];

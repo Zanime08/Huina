@@ -28,3 +28,15 @@ export function weekKey(nowMs: number): string {
 export function weeklySeed(nowMs: number): number {
   return hashSeed('hype-weekly-' + weekKey(nowMs));
 }
+
+/**
+ * Month (1–12) of an ISO week, derived from the week key itself — NOT from the
+ * wall clock. Everyone playing the same weekly seed gets the same seasonal
+ * event pool, even if the week straddles two months.
+ */
+export function monthForKey(wk: string): number {
+  const parts = wk.split('-W');
+  const y = parseInt(parts[0], 10);
+  const w = parseInt(parts[1] ?? '1', 10);
+  return new Date(Date.UTC(y, 0, 1 + (w - 1) * 7 + 3)).getUTCMonth() + 1;
+}

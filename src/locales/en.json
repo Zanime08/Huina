@@ -118,5 +118,6 @@
   "weekly_best": "best",
   "set_account": "☁️ Yandex account",
   "auth_fail": "Couldn't sign in. Try again later.",
-  "set_login_hint": "Sign in to enable cloud saves and leaderboards"
+  "set_login_hint": "Sign in to enable cloud saves and leaderboards",
+  "weekly_rank": "tournament rank: #{n}"
 }

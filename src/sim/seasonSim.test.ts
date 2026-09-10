@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { mulberry32 } from '../core/rng';
-import { MEMES, EVENTS } from './memeRegistry';
+import { MEMES, EVENTS, EventDef } from './memeRegistry';
 import {
   createSeason, tickSeason, buyMeme, sellMeme, boostMeme,
   advanceDay, endSeason, seasonResult, netWorth, sellProceeds, SimCtx,
@@ -116,5 +116,29 @@ describe('seasonSim', () => {
     }
     expect(s.over).toBe(true);
     expect(Number.isFinite(s.cash)).toBe(true);
+  });
+
+  it('seasonal events fire only in their months', async () => {
+    const { seasonalWeight } = await import('./seasonSim');
+    const halloween: EventDef = { id: 'h', weight: 10, minDay: 1, kind: 'good', target: 'random', hype: 10, months: [10], text: { ru: '', en: '' } };
+    const always: EventDef = { id: 'a', weight: 10, minDay: 1, kind: 'good', target: 'random', hype: 10, text: { ru: '', en: '' } };
+    expect(seasonalWeight(halloween, 10)).toBe(3);   // in-season: 3× boost
+    expect(seasonalWeight(halloween, 5)).toBe(0);    // out-of-season: off
+    expect(seasonalWeight(always, 5)).toBe(1);       // non-seasonal: no change
+    expect(seasonalWeight(halloween, undefined)).toBe(1); // no calendar → live (backcompat)
+
+    // rollNews respects the calendar: in May the Halloween event never resolves
+    const { createSeason, rollNews } = await import('./seasonSim');
+    const events = [halloween, always];
+    const defs = new Map(MEMES.map((m) => [m.id, m]));
+    for (let i = 0; i < 30; i++) {
+      const rng2 = mulberry32(1000 + i);
+      const s2 = createSeason(MEMES, events, {
+        slots: 3, startCash: 100, maxEnergy: 3, energyPerDay: 1,
+        luck: 0, boostPower: 1, goal: 150, daysTotal: 10, dayLength: 22,
+      }, rng2);
+      const news = rollNews(s2, { rng: mulberry32(500 + i), defs, events, month: 5 });
+      for (const n of news) expect(n.eventId).not.toBe('h');
+    }
   });
 });

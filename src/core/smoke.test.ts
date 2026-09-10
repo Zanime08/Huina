@@ -135,6 +135,26 @@ describe('game smoke flow', () => {
     expect(saveManager.data.weeklyBest).toBeGreaterThanOrEqual(1400);
   }, 10000);
 
+  it('weekly results show the player tournament rank', async () => {
+    const mp = new MockPlatform();
+    mp.mockBoard = [
+      { name: 'Rival', score: 9999, rank: 1, isPlayer: false },
+      { name: 'Тестер', score: 300, rank: 2, isPlayer: true },
+    ];
+    const g = new Game(mp);
+    g.applyLang();
+    g.showMenu();
+    click(q('.btn.weekly'));
+    type Scr = { s: { day: number; dayT: number; cash: number } };
+    const scr = (g as unknown as { current: Scr }).current;
+    scr.s.day = 10; scr.s.dayT = 0.999; scr.s.cash = 400; // profit ≈ 300
+    await sleep(500);
+    expect(g.sm.current).toBe('RESULTS');
+    // the weekly BOARD (not the season one) was loaded and the rank is displayed
+    await sleep(50);
+    expect(document.body.textContent).toContain('#2');
+  }, 10000);
+
   it('meta screens render and upgrade purchase works', () => {
     saveManager.addCoins(1000);
     game.showMenu();

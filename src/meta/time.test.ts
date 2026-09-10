@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { weekKey, weeklySeed, dailySeed, todayKey } from './daily';
+import { weekKey, weeklySeed, dailySeed, todayKey, monthForKey } from './daily';
 
 describe('time utils (server-time based)', () => {
   it('todayKey is UTC yyyy-mm-dd', () => {
@@ -24,5 +24,12 @@ describe('time utils (server-time based)', () => {
     expect(a).toBe(b);
     expect(a).not.toBe(c);
     expect(weeklySeed(Date.UTC(2026, 8, 10))).not.toBe(dailySeed(Date.UTC(2026, 8, 10)));
+  });
+
+  it('monthForKey derives the same month for everyone in a week', () => {
+    expect(monthForKey('2026-W37')).toBe(9);  // Sep 7–13
+    expect(monthForKey('2026-W01')).toBe(1);  // early January
+    expect(monthForKey('2026-W53')).toBe(1);  // spans Dec 28 → Jan 3: January side wins
+    expect(monthForKey('2026-W14')).toBe(4);  // early April
   });
 });

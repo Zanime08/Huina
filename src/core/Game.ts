@@ -7,7 +7,7 @@ import { createSeason, seasonResult, SeasonState, SimCtx } from '../sim/seasonSi
 import { upgradeEffects, goalForSeason, seasonNumber, rewardForResult, contentSeason, contentSeasonName, registerStreak } from '../sim/economy';
 import { saveManager } from '../meta/saveManager';
 import { checkSeasonAchievements, unlock } from '../meta/achievements';
-import { dailySeed, todayKey, weeklySeed, weekKey } from '../meta/daily';
+import { dailySeed, todayKey, weeklySeed, weekKey, monthForKey } from '../meta/daily';
 import { analytics } from '../meta/analytics';
 import type { IPlatform } from '../platform/IPlatform';
 import { AdsService } from '../platform/AdsService';
@@ -133,7 +133,10 @@ export class Game {
       daysTotal: CONFIG.daysTotal,
       dayLength: CONFIG.dayLengthSec,
     }, rng);
-    const ctx: SimCtx = { rng, defs: new Map(MEMES.map((m) => [m.id, m])), events: EVENTS };
+    // seasonal calendar: month from server time; for the weekly tournament it is
+    // derived from the week key so every competitor gets the identical event pool
+    const month = mode === 'weekly' ? monthForKey(weekKey(now)) : new Date(now).getUTCMonth() + 1;
+    const ctx: SimCtx = { rng, defs: new Map(MEMES.map((m) => [m.id, m])), events: EVENTS, month };
     // day-1 collection unlock
     for (const m of state.memes) {
       if (!d.collection.includes(m.defId)) d.collection.push(m.defId);
@@ -212,7 +215,7 @@ export class Game {
 
     checkSeasonAchievements(s);
 
-    this.show(new ResultsScreen(s, this.platform, this.ads, isDaily, newBest, {
+    this.show(new ResultsScreen(s, this.platform, this.ads, isDaily, isWeekly, newBest, {
       onRetry: () => {
         analytics.event('retry', { mode: this.mode });
         if (isDaily) this.showMenu(); // daily: one shot

@@ -118,3 +118,13 @@ Unit (vitest): жизненный цикл мемов, цены/профит, м
   ретраи турнира не влияют на прогрессию и экономику.
 - Сохранения: saveVersion 3 (+weeklyBest/weeklyDate), миграция v2→v3.
 - `npm run package` — сборка + ZIP для консоли Яндекс Игр.
+
+---
+
+## 8. Изменения v1.2
+- `seasonalWeight(e, month)` в seasonSim — чистая функция календаря; `SimCtx.month`.
+- `monthForKey(weekKey)` в meta/daily — месяц недели для честного сида турнира.
+- `weighted()` в rng — нулевые веса строго исключаются (guard total<=0).
+- ResultsScreen: флаг isWeekly в конструкторе, место игрока в недельной таблице.
+- MockPlatform.mockBoard — эмуляция заполненного лидерборда в тестах/QA.
+- package.json: `npm test` = tsc --noEmit && vitest run.

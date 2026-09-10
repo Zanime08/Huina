@@ -71,6 +71,8 @@ export interface SimCtx {
   defs: Map<string, MemeDef>;
   events: EventDef[];
   lang?: 'ru' | 'en';
+  /** Current month 1–12 (server time); drives the seasonal event calendar. */
+  month?: number;
 }
 
 export function lifespanOf(def: MemeDef): number {
@@ -185,18 +187,29 @@ function targetMemes(s: SeasonState, target: string, rng: Rng): MemeState[] {
   return [alive[Math.floor(rng() * alive.length)]];
 }
 
-function eventWeight(e: EventDef, s: SeasonState): number {
+/** Seasonal events fire only in their months (live-content lever, data-driven). */
+export function seasonalWeight(e: EventDef, month: number | undefined): number {
+  if (!e.months || e.months.length === 0) return 1;
+  if (month === undefined) return 1; // no calendar (old tests/saves) → everything lives
+  return e.months.includes(month) ? 3 : 0;
+}
+
+function eventWeight(e: EventDef, s: SeasonState, ctx: SimCtx): number {
   if (s.day < e.minDay) return 0;
-  if (e.kind === 'good' || e.kind === 'legend') return e.weight * (1 + s.opts.luck * 2);
-  if (e.kind === 'bad') return e.weight * (1 - s.opts.luck);
-  return e.weight;
+  const seasonal = seasonalWeight(e, ctx.month);
+  if (seasonal === 0) return 0;
+  let w: number;
+  if (e.kind === 'good' || e.kind === 'legend') w = e.weight * (1 + s.opts.luck * 2);
+  else if (e.kind === 'bad') w = e.weight * (1 - s.opts.luck);
+  else w = e.weight;
+  return w * seasonal;
 }
 
 export function rollNews(s: SeasonState, ctx: SimCtx): ResolvedNews[] {
   const out: ResolvedNews[] = [];
   const count = ctx.rng() < 0.35 ? 2 : 1;
   for (let i = 0; i < count; i++) {
-    const e = weighted(ctx.rng, ctx.events, (ev) => eventWeight(ev, s));
+    const e = weighted(ctx.rng, ctx.events, (ev) => eventWeight(ev, s, ctx));
     const targets = targetMemes(s, e.target, ctx.rng);
     const memeId = targets.length > 0 && e.target !== 'all' ? targets[0].defId : undefined;
     const def = memeId ? ctx.defs.get(memeId) : undefined;
