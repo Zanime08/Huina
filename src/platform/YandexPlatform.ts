@@ -181,4 +181,17 @@ export class YandexPlatform implements IPlatform {
   onGameResume(cb: () => void): void {
     try { this.ysdk?.on?.('game_api_resume', cb); } catch { /* noop */ }
   }
+
+  async getFlags(defaults: Record<string, string>): Promise<Record<string, string>> {
+    try {
+      const flags = await Promise.race([
+        this.ysdk.getFlags({ defaultFlags: defaults }),
+        new Promise((_, rej) => setTimeout(() => rej(new Error('flags timeout')), 5000)),
+      ]) as Record<string, string>;
+      return { ...defaults, ...(typeof flags === 'object' && flags ? flags : {}) };
+    } catch (e) {
+      console.warn('[ysdk] flags unavailable, using defaults', e);
+      return { ...defaults };
+    }
+  }
 }

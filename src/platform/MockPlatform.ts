@@ -51,4 +51,22 @@ export class MockPlatform implements IPlatform {
       return false;
     }
   }
+
+  /**
+   * Dev/QA: defaults, overridable via URL for testing live config, e.g.
+   * ?flags=adCooldownSec:60,weeklyBonus:0
+   */
+  async getFlags(defaults: Record<string, string>): Promise<Record<string, string>> {
+    const out = { ...defaults };
+    try {
+      const raw = new URLSearchParams(location.search).get('flags');
+      if (raw) {
+        for (const pair of raw.split(',')) {
+          const [k, v] = pair.split(':');
+          if (k && v !== undefined && k in out) out[k] = v;
+        }
+      }
+    } catch { /* noop */ }
+    return out;
+  }
 }

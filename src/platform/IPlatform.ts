@@ -25,6 +25,11 @@ export interface IPlatform {
   auth(): Promise<string | null>; // returns display name or null
   /** True when cloud saves / leaderboards are usable for this player. */
   isAuthorized(): boolean;
+  /**
+   * Remote config (Yandex console flags). Returns defaults merged with server
+   * values; must ALWAYS resolve (network/SDK errors → defaults).
+   */
+  getFlags(defaults: Record<string, string>): Promise<Record<string, string>>;
   gameplayStart(): void;
   gameplayStop(): void;
   loadingReady(): void;

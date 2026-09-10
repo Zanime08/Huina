@@ -3,6 +3,7 @@ import './style.css';
 import { Game } from './core/Game';
 import { saveManager } from './meta/saveManager';
 import { analytics } from './meta/analytics';
+import { applyRemoteFlags, DEFAULT_FLAGS, flagsSnapshot } from './meta/remoteConfig';
 import { MockPlatform } from './platform/MockPlatform';
 import { YandexPlatform } from './platform/YandexPlatform';
 import type { IPlatform } from './platform/IPlatform';
@@ -56,6 +57,16 @@ async function boot(): Promise<void> {
     (d) => platform.cloudSave({ ...d }),
   );
   await saveManager.loadCloud();
+
+  setBoot(55, 'Config…');
+  // Remote Config: Yandex console flags → live tuning (prices, ad pace, events).
+  try {
+    const flags = await platform.getFlags(DEFAULT_FLAGS);
+    applyRemoteFlags(flags);
+    analytics.event('flags_applied', { ...flagsSnapshot(), real: platform.isReal });
+  } catch (e) {
+    console.warn('[boot] flags failed, defaults kept', e);
+  }
 
   setBoot(70, 'Audio…');
   applyCosmetic();

@@ -1,5 +1,11 @@
 # Roadmap
 
+## v1.3 ✅ ВЫПУЩЕНА
+- ⚙️ Remote Config через флаги Яндекса (getFlags): adCooldownSec, dailyBonus,
+  weeklyBonus, seasonalBoost, cosmeticPricePct — живой тюнинг без пересборки
+- Клампы всех значений, fallback на дефолты, аналитика flags_applied
+- Debug: просмотр/сброс флагов; Mock: ?flags= для QA. 44 теста
+
 ## v1.2 ✅ ВЫПУЩЕНА
 - 📅 Сезонный календарь ивентов: поле months в EventDef, новогодний ивент,
   месяц по серверному времени; для турнира — месяц из ключа недели (честный сид)

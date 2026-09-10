@@ -128,3 +128,14 @@ Unit (vitest): жизненный цикл мемов, цены/профит, м
 - ResultsScreen: флаг isWeekly в конструкторе, место игрока в недельной таблице.
 - MockPlatform.mockBoard — эмуляция заполненного лидерборда в тестах/QA.
 - package.json: `npm test` = tsc --noEmit && vitest run.
+
+---
+
+## 9. Изменения v1.3
+- `IPlatform.getFlags(defaults)`; YandexPlatform → `ysdk.getFlags({ defaultFlags })`
+  с таймаутом 5с и fallback на дефолты; MockPlatform — парсит `?flags=k:v,k:v` (QA).
+- НОВЫЙ `meta/remoteConfig.ts`: FLAG_DEFS (парсер+кламп+применение), DEFAULT_FLAGS,
+  `applyRemoteFlags/resetRemoteFlags/flagsSnapshot`, `cosmeticPrice(base)`.
+- Boot: флаги применяются до меню (55% прогресса), событие аналитики `flags_applied`.
+- CONFIG.seasonalBoost вместо хардкода ×3 в seasonalWeight; цены косметики — через cosmeticPrice().
+- Debug-панель: текущие флаги + сброс.

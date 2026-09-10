@@ -22,6 +22,7 @@ export const CONFIG = {
   hypeTickRate: 1.6,        // hype drift per second at virality=1
   noiseScale: 6,            // random walk amplitude per second
   driftK: 0.31,             // lifecycle mean-reversion speed (× meme virality)
+  seasonalBoost: 3,         // weight multiplier for in-season events (remote-tunable)
   priceBase: 2,             // price = priceBase + hype/100 * priceScale * phaseMult
   priceScale: 18,
   sellFeePct: 2,            // platform commission on sells — coin sink + anti pump-and-dump

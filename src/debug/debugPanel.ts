@@ -1,6 +1,7 @@
 // DEV-ONLY debug panel (?debug=1). Dynamically imported, tree-shaken from prod.
 import { saveManager } from '../meta/saveManager';
 import { analytics } from '../meta/analytics';
+import { flagsSnapshot, resetRemoteFlags } from '../meta/remoteConfig';
 import { el } from '../ui/helpers';
 import type { Game } from '../core/Game';
 import type { IPlatform } from '../platform/IPlatform';
@@ -81,5 +82,9 @@ export function attachDebug(game: Game, platform: IPlatform): void {
   });
   btn('force interstitial', () => { void game.ads.showInterstitial().then((r) => alert('interstitial: ' + r)); });
   btn('force rewarded', () => { void game.ads.showRewarded().then((r) => alert('rewarded: ' + r)); });
+  btn(`flags: ${Object.entries(flagsSnapshot()).map(([k, v]) => `${k}=${v}`).join(' ')}`, () => {
+    alert('Effective remote flags:\n' + Object.entries(flagsSnapshot()).map(([k, v]) => `${k} = ${v}`).join('\n'));
+  });
+  btn('reset flags to defaults', () => { resetRemoteFlags(); alert('flags reset'); });
   document.body.appendChild(panel);
 }

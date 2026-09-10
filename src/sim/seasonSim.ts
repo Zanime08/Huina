@@ -191,7 +191,7 @@ function targetMemes(s: SeasonState, target: string, rng: Rng): MemeState[] {
 export function seasonalWeight(e: EventDef, month: number | undefined): number {
   if (!e.months || e.months.length === 0) return 1;
   if (month === undefined) return 1; // no calendar (old tests/saves) → everything lives
-  return e.months.includes(month) ? 3 : 0;
+  return e.months.includes(month) ? CONFIG.seasonalBoost : 0;
 }
 
 function eventWeight(e: EventDef, s: SeasonState, ctx: SimCtx): number {

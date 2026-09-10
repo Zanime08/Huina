@@ -6,6 +6,7 @@ import { analytics } from '../../meta/analytics';
 import { UPGRADES, ACHIEVEMENTS, MEMES, COSMETICS } from '../../sim/memeRegistry';
 import { upgradeCost, studioTier, STUDIO_EMOJI } from '../../sim/economy';
 import { applyCosmetic } from '../cosmetics';
+import { cosmeticPrice } from '../../meta/remoteConfig';
 import type { IPlatform } from '../../platform/IPlatform';
 
 function topbar(title: string, onBack: () => void, coins = true): HTMLElement {
@@ -82,13 +83,13 @@ export class UpgradesScreen {
       sw.style.background = `linear-gradient(135deg, ${skin.accent}, ${skin.accent2})`;
       item.appendChild(sw);
       item.appendChild(el('div', 'cos-name', i18n.lang === 'ru' ? skin.name.ru : skin.name.en));
-      const btn = el('button', 'btn small', active ? `✓ ${i18n.t('cos_active')}` : owned ? i18n.t('cos_use') : `🪙${fmt(skin.cost)}`) as HTMLButtonElement;
+      const btn = el('button', 'btn small', active ? `✓ ${i18n.t('cos_active')}` : owned ? i18n.t('cos_use') : `🪙${fmt(cosmeticPrice(skin.cost))}`) as HTMLButtonElement;
       btn.style.marginTop = '6px';
-      btn.disabled = active || (!owned && saveManager.data.coins < skin.cost);
+      btn.disabled = active || (!owned && saveManager.data.coins < cosmeticPrice(skin.cost));
       btn.onclick = () => {
         if (!owned) {
-          if (saveManager.data.coins < skin.cost) { audio.error(); return; }
-          saveManager.addCoins(-skin.cost);
+          if (saveManager.data.coins < cosmeticPrice(skin.cost)) { audio.error(); return; }
+          saveManager.addCoins(-cosmeticPrice(skin.cost));
           cos.owned.push(skin.id);
           analytics.event('cosmetic_buy', { id: skin.id });
         }
