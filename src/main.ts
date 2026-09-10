@@ -28,6 +28,13 @@ window.addEventListener('unhandledrejection', (e) => {
 
 async function boot(): Promise<void> {
   analytics.configure();
+  const bootT = Date.now();
+  // session duration — fired once when the tab/game is hidden or closed
+  const reportSession = () => {
+    try { analytics.event('session_end', { sec: Math.round((Date.now() - bootT) / 1000) }); } catch { /* noop */ }
+  };
+  document.addEventListener('visibilitychange', () => { if (document.hidden) reportSession(); });
+  window.addEventListener('pagehide', reportSession);
   setBoot(15, 'SDK…');
   let platform: IPlatform;
   try {

@@ -17,9 +17,20 @@ describe('economy', () => {
     const fx = upgradeEffects(d);
     expect(fx.startCash).toBe(220);
     expect(fx.maxEnergy).toBe(5);
+    expect(fx.energyPerDay).toBe(3);
     expect(fx.slots).toBe(4);
     expect(fx.luck).toBeCloseTo(0.12, 5);
     expect(fx.insider).toBe(2);
+  });
+
+  it('every energy level grants something', () => {
+    const d = defaultSave();
+    d.upgrades = { energy: 1 };
+    expect(upgradeEffects(d)).toMatchObject({ maxEnergy: 4, energyPerDay: 1 });
+    d.upgrades = { energy: 2 };
+    expect(upgradeEffects(d)).toMatchObject({ maxEnergy: 4, energyPerDay: 2 });
+    d.upgrades = { energy: 3 };
+    expect(upgradeEffects(d)).toMatchObject({ maxEnergy: 5, energyPerDay: 2 });
   });
 
   it('goals grow per season', () => {
@@ -49,7 +60,7 @@ describe('economy', () => {
 });
 
 describe('content season & streak', () => {
-  it('content season unlocks after 4 seasons', async () => {
+  it('content season unlocks progressively (1 → 2 → 3)', async () => {
     const { contentSeason } = await import('./economy');
     const d = defaultSave();
     expect(contentSeason(d)).toBe(1);
@@ -57,8 +68,10 @@ describe('content season & streak', () => {
     expect(contentSeason(d)).toBe(1);
     d.seasonsPlayed = 4;
     expect(contentSeason(d)).toBe(2);
+    d.seasonsPlayed = 10;
+    expect(contentSeason(d)).toBe(3);
     d.seasonsPlayed = 99;
-    expect(contentSeason(d)).toBe(2);
+    expect(contentSeason(d)).toBe(3);
   });
 
   it('streak registers consecutive days and pays bonus', async () => {

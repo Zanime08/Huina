@@ -12,6 +12,11 @@ import {
 import type { IPlatform } from '../../platform/IPlatform';
 import type { AdsService } from '../../platform/AdsService';
 
+/** Minimal view of the game state machine (avoids a circular import of Game). */
+export interface StateMachineLike {
+  go(to: 'PAUSED' | 'PLAYING'): boolean;
+}
+
 export interface GameCallbacks {
   onFinish(s: SeasonState): void;
   onQuit(s: SeasonState): void;
@@ -60,6 +65,7 @@ export class GameScreen {
     private platform: IPlatform,
     private ads: AdsService,
     private insider: number,
+    private sm: StateMachineLike,
     private cb: GameCallbacks,
   ) {
     void platform;
@@ -117,6 +123,7 @@ export class GameScreen {
     // tutorial
     if (!saveManager.data.tutorialDone) {
       this.tutStep = 1;
+      analytics.event('tutorial_start');
       setTimeout(() => { if (!this.destroyed) toast(i18n.t('tut_farm'), 'gold', 4000); }, 600);
       setTimeout(() => this.applyTutGlow(), 700);
     }
@@ -266,15 +273,23 @@ export class GameScreen {
   private showPause(): void {
     if (this.s.over || this.paused) return;
     this.paused = true;
+    this.sm.go('PAUSED');
     audio.click();
     const body = el('div', 'center muted', `${i18n.t('hud_day')} ${this.s.day}/${this.s.opts.daysTotal} · ${fmt(netWorth(this.s))} 🪙`);
     modal(i18n.t('paused_title'), body, [
-      { label: i18n.t('paused_resume'), cls: 'primary', onClick: () => { this.paused = false; this.last = performance.now(); } },
-      { label: i18n.t('bailout_btn', { n: 60 }), onClick: () => { this.paused = false; this.last = performance.now(); void this.bailout(); } },
+      { label: i18n.t('paused_resume'), cls: 'primary', onClick: () => this.resume() },
+      { label: i18n.t('bailout_btn', { n: 60 }), onClick: () => void this.bailout() },
       { label: i18n.t('paused_quit'), onClick: () => this.quit() },
     ]);
   }
 
+  private resume(): void {
+    this.paused = false;
+    this.sm.go('PLAYING');
+    this.last = performance.now();
+  }
+
+  /** Rewarded ad WITHOUT unpausing the sim: the world must not run while the ad covers it. */
   private async bailout(): Promise<void> {
     audio.click();
     const ok = await this.ads.showRewarded();
@@ -286,7 +301,7 @@ export class GameScreen {
     } else {
       toast(i18n.t('toast_ad_fail'), 'bad');
     }
-    this.last = performance.now();
+    this.resume();
   }
 
   private quit(): void {
@@ -395,9 +410,10 @@ export class GameScreen {
     if (this.s.cash < 5 && portfolioValue(this.s) < 5 && !this.s.over) {
       this.bailoutOffered = true;
       this.paused = true;
+      this.sm.go('PAUSED');
       modal(i18n.t('toast_bailout', { n: 60 }), el('div', 'center', '🆘'), [
-        { label: i18n.t('toast_yes'), cls: 'primary', onClick: () => { this.paused = false; this.last = performance.now(); void this.bailout(); } },
-        { label: i18n.t('toast_no'), onClick: () => { this.paused = false; this.last = performance.now(); } },
+        { label: i18n.t('toast_yes'), cls: 'primary', onClick: () => void this.bailout() },
+        { label: i18n.t('toast_no'), onClick: () => this.resume() },
       ]);
     }
   }

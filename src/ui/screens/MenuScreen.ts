@@ -2,7 +2,7 @@ import { el, fmt, fmtSigned } from '../helpers';
 import { i18n } from '../i18n';
 import { saveManager } from '../../meta/saveManager';
 import { goalForSeason, seasonNumber, studioTier, STUDIO_EMOJI, contentSeason, contentSeasonName } from '../../sim/economy';
-import { SEASONS } from '../../sim/memeRegistry';
+import { SEASONS, ACHIEVEMENTS } from '../../sim/memeRegistry';
 import { audio } from '../../audio/audioManager';
 import type { IPlatform } from '../../platform/IPlatform';
 

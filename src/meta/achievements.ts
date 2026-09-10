@@ -1,4 +1,4 @@
-import { ACHIEVEMENTS } from '../sim/memeRegistry';
+import { ACHIEVEMENTS, MEMES } from '../sim/memeRegistry';
 import { saveManager } from './saveManager';
 import { bus, Events } from '../core/EventBus';
 import type { SeasonState } from '../sim/seasonSim';
@@ -35,6 +35,7 @@ export function checkSeasonAchievements(s: SeasonState): string[] {
   if (d.collection.length >= 6 && need('collector6')) got.push('collector6');
   if (d.collection.length >= 12 && need('collector12')) got.push('collector12');
   if (d.collection.length >= 18 && need('collector18')) got.push('collector18');
+  if (d.collection.length >= MEMES.length && need('collector26')) got.push('collector26');
   void profit;
 
   for (const id of got) unlock(id);

@@ -1,56 +1,522 @@
 [
-  { "id": "vozdukhan", "rarity": "epic", "virality": 1.0, "stamina": 0.9, "volatility": 0.7, "hue": 190, "face": 0, "seasons": [1],
-    "name": { "ru": "Воздуханчик", "en": "Windbag Jr." },
-    "tagline": { "ru": "Много обещает. Дуёт сильно.", "en": "Promises a lot. Blows hard." } },
-  { "id": "cheremsha", "rarity": "rare", "virality": 0.9, "stamina": 1.3, "volatility": 0.4, "hue": 110, "face": 1, "seasons": [1],
-    "name": { "ru": "Черемша-2030", "en": "Soviet Leek" },
-    "tagline": { "ru": "Товарищ! План по хайпу!", "en": "Comrade! The hype plan!" } },
-  { "id": "sixseven", "rarity": "common", "virality": 1.5, "stamina": 0.55, "volatility": 0.9, "hue": 45, "face": 2, "seasons": [1],
-    "name": { "ru": "Шесть-Семь", "en": "Six-Seven" },
-    "tagline": { "ru": "Ответ на любой вопрос.", "en": "The answer to everything." } },
-  { "id": "burmalda", "rarity": "legendary", "virality": 1.7, "stamina": 0.5, "volatility": 1.0, "hue": 300, "face": 3, "seasons": [1],
-    "name": { "ru": "Бурмалда", "en": "Burmalda" },
-    "tagline": { "ru": "Никто не знает, что это.", "en": "Nobody knows what it is." } },
-  { "id": "kotost", "rarity": "rare", "virality": 0.8, "stamina": 1.4, "volatility": 0.3, "hue": 25, "face": 4, "seasons": [1],
-    "name": { "ru": "Котость", "en": "Catitude" },
-    "tagline": { "ru": "Кот. Просто кот. Легенда.", "en": "A cat. Just a cat. Legend." } },
-  { "id": "pingvin", "rarity": "epic", "virality": 0.7, "stamina": 1.5, "volatility": 0.25, "hue": 220, "face": 5, "seasons": [1],
-    "name": { "ru": "Пингвин-Нигилист", "en": "Nihilist Penguin" },
-    "tagline": { "ru": "Уходит. Не догоняй.", "en": "Walking away. Don't follow." } },
-  { "id": "enot", "rarity": "common", "virality": 1.0, "stamina": 1.0, "volatility": 0.6, "hue": 160, "face": 6, "seasons": [1],
-    "name": { "ru": "Енот Тимофей", "en": "Timmy Raccoon" },
-    "tagline": { "ru": "Моет енотов. Моет хайп.", "en": "Washes everything. Even hype." } },
-  { "id": "dizkombob", "rarity": "rare", "virality": 1.1, "stamina": 0.8, "volatility": 0.8, "hue": 265, "face": 7, "seasons": [1],
-    "name": { "ru": "Дизкомбобулятор", "en": "Discombobulator" },
-    "tagline": { "ru": "Слово, объясняющее всё.", "en": "The word that explains all." } },
-  { "id": "dzheb", "rarity": "common", "virality": 1.3, "stamina": 0.6, "volatility": 0.9, "hue": 15, "face": 8, "seasons": [1],
-    "name": { "ru": "Мартышка-Джеб", "en": "Jab Monkey" },
-    "tagline": { "ru": "Бьёт внезапно. По рынку.", "en": "Hits out of nowhere." } },
-  { "id": "auratom", "rarity": "rare", "virality": 0.9, "stamina": 1.1, "volatility": 0.5, "hue": 330, "face": 9, "seasons": [1],
-    "name": { "ru": "Том с Аурой", "en": "Aura Tom" },
-    "tagline": { "ru": "+1000 к ауре. Фейрс.", "en": "+1000 aura. Fairs." } },
-  { "id": "vernite2016", "rarity": "common", "virality": 0.75, "stamina": 1.2, "volatility": 0.35, "hue": 200, "face": 10, "seasons": [1],
-    "name": { "ru": "Верни 2016-й", "en": "Bring Back 2016" },
-    "tagline": { "ru": "Трава была зеленее.", "en": "Grass was greener." } },
-  { "id": "mojno", "rarity": "epic", "virality": 1.2, "stamina": 0.75, "volatility": 0.75, "hue": 80, "face": 11, "seasons": [1],
-    "name": { "ru": "Можно-а-зачем", "en": "Yeah-But-Why" },
-    "tagline": { "ru": "Философия в одном слове.", "en": "Philosophy in one word." } },
-  { "id": "tykva", "rarity": "common", "virality": 1.2, "stamina": 0.7, "volatility": 0.7, "hue": 30, "face": 1, "seasons": [2],
-    "name": { "ru": "Тыква-Хайпожор", "en": "Hypebeast Pumpkin" },
-    "tagline": { "ru": "Съест твой хайп. И пирог.", "en": "Eats your hype. And pie." } },
-  { "id": "dekan", "rarity": "rare", "virality": 0.85, "stamina": 1.3, "volatility": 0.4, "hue": 250, "face": 8, "seasons": [2],
-    "name": { "ru": "Декан Сессии", "en": "Dean of Exams" },
-    "tagline": { "ru": "Все на пары. Хайп по расписанию.", "en": "All to class. Hype on schedule." } },
-  { "id": "grib", "rarity": "common", "virality": 1.0, "stamina": 1.0, "volatility": 0.6, "hue": 140, "face": 0, "seasons": [2],
-    "name": { "ru": "Грибной Дождь", "en": "Mushroom Rain" },
-    "tagline": { "ru": "Растёт сам. Как подписчики.", "en": "Grows itself. Like followers." } },
-  { "id": "kotleta", "rarity": "epic", "virality": 1.1, "stamina": 0.9, "volatility": 0.5, "hue": 15, "face": 4, "seasons": [2],
-    "name": { "ru": "Котлетка с Пюрешкой", "en": "Cutlet & Mash" },
-    "tagline": { "ru": "Вкус детства. +50 к ностальгии.", "en": "Taste of childhood." } },
-  { "id": "babushka", "rarity": "rare", "virality": 1.3, "stamina": 0.65, "volatility": 0.85, "hue": 320, "face": 5, "seasons": [2],
-    "name": { "ru": "Нейро-Бабушка", "en": "AI Granny" },
-    "tagline": { "ru": "Пирожки сгенерированы. Внуки нет.", "en": "Pies generated. Grandkids not." } },
-  { "id": "probka", "rarity": "common", "virality": 0.7, "stamina": 1.4, "volatility": 0.3, "hue": 0, "face": 10, "seasons": [2],
-    "name": { "ru": "Пробка 9 баллов", "en": "Traffic Jam 9/10" },
-    "tagline": { "ru": "Стоит. Все стоят. Хайп стоит.", "en": "Stuck. Everyone's stuck." } }
+  {
+    "id": "vozdukhan",
+    "rarity": "epic",
+    "virality": 1.0,
+    "stamina": 0.9,
+    "volatility": 0.7,
+    "hue": 190,
+    "face": 0,
+    "seasons": [
+      1
+    ],
+    "name": {
+      "ru": "Воздуханчик",
+      "en": "Windbag Jr."
+    },
+    "tagline": {
+      "ru": "Много обещает. Дуёт сильно.",
+      "en": "Promises a lot. Blows hard."
+    }
+  },
+  {
+    "id": "cheremsha",
+    "rarity": "rare",
+    "virality": 0.9,
+    "stamina": 1.3,
+    "volatility": 0.4,
+    "hue": 110,
+    "face": 1,
+    "seasons": [
+      1
+    ],
+    "name": {
+      "ru": "Черемша-2030",
+      "en": "Soviet Leek"
+    },
+    "tagline": {
+      "ru": "Товарищ! План по хайпу!",
+      "en": "Comrade! The hype plan!"
+    }
+  },
+  {
+    "id": "sixseven",
+    "rarity": "common",
+    "virality": 1.5,
+    "stamina": 0.55,
+    "volatility": 0.9,
+    "hue": 45,
+    "face": 2,
+    "seasons": [
+      1
+    ],
+    "name": {
+      "ru": "Шесть-Семь",
+      "en": "Six-Seven"
+    },
+    "tagline": {
+      "ru": "Ответ на любой вопрос.",
+      "en": "The answer to everything."
+    }
+  },
+  {
+    "id": "burmalda",
+    "rarity": "legendary",
+    "virality": 1.7,
+    "stamina": 0.5,
+    "volatility": 1.0,
+    "hue": 300,
+    "face": 3,
+    "seasons": [
+      1
+    ],
+    "name": {
+      "ru": "Бурмалда",
+      "en": "Burmalda"
+    },
+    "tagline": {
+      "ru": "Никто не знает, что это.",
+      "en": "Nobody knows what it is."
+    }
+  },
+  {
+    "id": "kotost",
+    "rarity": "rare",
+    "virality": 0.8,
+    "stamina": 1.4,
+    "volatility": 0.3,
+    "hue": 25,
+    "face": 4,
+    "seasons": [
+      1
+    ],
+    "name": {
+      "ru": "Котость",
+      "en": "Catitude"
+    },
+    "tagline": {
+      "ru": "Кот. Просто кот. Легенда.",
+      "en": "A cat. Just a cat. Legend."
+    }
+  },
+  {
+    "id": "pingvin",
+    "rarity": "epic",
+    "virality": 0.7,
+    "stamina": 1.5,
+    "volatility": 0.25,
+    "hue": 220,
+    "face": 5,
+    "seasons": [
+      1
+    ],
+    "name": {
+      "ru": "Пингвин-Нигилист",
+      "en": "Nihilist Penguin"
+    },
+    "tagline": {
+      "ru": "Уходит. Не догоняй.",
+      "en": "Walking away. Don't follow."
+    }
+  },
+  {
+    "id": "enot",
+    "rarity": "common",
+    "virality": 1.0,
+    "stamina": 1.0,
+    "volatility": 0.6,
+    "hue": 160,
+    "face": 6,
+    "seasons": [
+      1
+    ],
+    "name": {
+      "ru": "Енот Тимофей",
+      "en": "Timmy Raccoon"
+    },
+    "tagline": {
+      "ru": "Моет енотов. Моет хайп.",
+      "en": "Washes everything. Even hype."
+    }
+  },
+  {
+    "id": "dizkombob",
+    "rarity": "rare",
+    "virality": 1.1,
+    "stamina": 0.8,
+    "volatility": 0.8,
+    "hue": 265,
+    "face": 7,
+    "seasons": [
+      1
+    ],
+    "name": {
+      "ru": "Дизкомбобулятор",
+      "en": "Discombobulator"
+    },
+    "tagline": {
+      "ru": "Слово, объясняющее всё.",
+      "en": "The word that explains all."
+    }
+  },
+  {
+    "id": "dzheb",
+    "rarity": "common",
+    "virality": 1.3,
+    "stamina": 0.6,
+    "volatility": 0.9,
+    "hue": 15,
+    "face": 8,
+    "seasons": [
+      1
+    ],
+    "name": {
+      "ru": "Мартышка-Джеб",
+      "en": "Jab Monkey"
+    },
+    "tagline": {
+      "ru": "Бьёт внезапно. По рынку.",
+      "en": "Hits out of nowhere."
+    }
+  },
+  {
+    "id": "auratom",
+    "rarity": "rare",
+    "virality": 0.9,
+    "stamina": 1.1,
+    "volatility": 0.5,
+    "hue": 330,
+    "face": 9,
+    "seasons": [
+      1
+    ],
+    "name": {
+      "ru": "Том с Аурой",
+      "en": "Aura Tom"
+    },
+    "tagline": {
+      "ru": "+1000 к ауре. Фейрс.",
+      "en": "+1000 aura. Fairs."
+    }
+  },
+  {
+    "id": "vernite2016",
+    "rarity": "common",
+    "virality": 0.75,
+    "stamina": 1.2,
+    "volatility": 0.35,
+    "hue": 200,
+    "face": 10,
+    "seasons": [
+      1
+    ],
+    "name": {
+      "ru": "Верни 2016-й",
+      "en": "Bring Back 2016"
+    },
+    "tagline": {
+      "ru": "Трава была зеленее.",
+      "en": "Grass was greener."
+    }
+  },
+  {
+    "id": "mojno",
+    "rarity": "epic",
+    "virality": 1.2,
+    "stamina": 0.75,
+    "volatility": 0.75,
+    "hue": 80,
+    "face": 11,
+    "seasons": [
+      1
+    ],
+    "name": {
+      "ru": "Можно-а-зачем",
+      "en": "Yeah-But-Why"
+    },
+    "tagline": {
+      "ru": "Философия в одном слове.",
+      "en": "Philosophy in one word."
+    }
+  },
+  {
+    "id": "tykva",
+    "rarity": "common",
+    "virality": 1.2,
+    "stamina": 0.7,
+    "volatility": 0.7,
+    "hue": 30,
+    "face": 1,
+    "seasons": [
+      2
+    ],
+    "name": {
+      "ru": "Тыква-Хайпожор",
+      "en": "Hypebeast Pumpkin"
+    },
+    "tagline": {
+      "ru": "Съест твой хайп. И пирог.",
+      "en": "Eats your hype. And pie."
+    }
+  },
+  {
+    "id": "dekan",
+    "rarity": "rare",
+    "virality": 0.85,
+    "stamina": 1.3,
+    "volatility": 0.4,
+    "hue": 250,
+    "face": 8,
+    "seasons": [
+      2
+    ],
+    "name": {
+      "ru": "Декан Сессии",
+      "en": "Dean of Exams"
+    },
+    "tagline": {
+      "ru": "Все на пары. Хайп по расписанию.",
+      "en": "All to class. Hype on schedule."
+    }
+  },
+  {
+    "id": "grib",
+    "rarity": "common",
+    "virality": 1.0,
+    "stamina": 1.0,
+    "volatility": 0.6,
+    "hue": 140,
+    "face": 0,
+    "seasons": [
+      2
+    ],
+    "name": {
+      "ru": "Грибной Дождь",
+      "en": "Mushroom Rain"
+    },
+    "tagline": {
+      "ru": "Растёт сам. Как подписчики.",
+      "en": "Grows itself. Like followers."
+    }
+  },
+  {
+    "id": "kotleta",
+    "rarity": "epic",
+    "virality": 1.1,
+    "stamina": 0.9,
+    "volatility": 0.5,
+    "hue": 15,
+    "face": 4,
+    "seasons": [
+      2
+    ],
+    "name": {
+      "ru": "Котлетка с Пюрешкой",
+      "en": "Cutlet & Mash"
+    },
+    "tagline": {
+      "ru": "Вкус детства. +50 к ностальгии.",
+      "en": "Taste of childhood."
+    }
+  },
+  {
+    "id": "babushka",
+    "rarity": "rare",
+    "virality": 1.3,
+    "stamina": 0.65,
+    "volatility": 0.85,
+    "hue": 320,
+    "face": 5,
+    "seasons": [
+      2
+    ],
+    "name": {
+      "ru": "Нейро-Бабушка",
+      "en": "AI Granny"
+    },
+    "tagline": {
+      "ru": "Пирожки сгенерированы. Внуки нет.",
+      "en": "Pies generated. Grandkids not."
+    }
+  },
+  {
+    "id": "probka",
+    "rarity": "common",
+    "virality": 0.7,
+    "stamina": 1.4,
+    "volatility": 0.3,
+    "hue": 0,
+    "face": 10,
+    "seasons": [
+      2
+    ],
+    "name": {
+      "ru": "Пробка 9 баллов",
+      "en": "Traffic Jam 9/10"
+    },
+    "tagline": {
+      "ru": "Стоит. Все стоят. Хайп стоит.",
+      "en": "Stuck. Everyone's stuck."
+    }
+  },
+  {
+    "id": "puhosos",
+    "rarity": "rare",
+    "virality": 1.2,
+    "stamina": 0.85,
+    "volatility": 0.75,
+    "hue": 210,
+    "face": 11,
+    "seasons": [
+      3
+    ],
+    "name": {
+      "ru": "Пухосос",
+      "en": "Fluff Vacuum"
+    },
+    "tagline": {
+      "ru": "Всасывает пух. И хайп.",
+      "en": "Sucks fluff. And hype."
+    }
+  },
+  {
+    "id": "plaksik",
+    "rarity": "rare",
+    "virality": 0.85,
+    "stamina": 1.35,
+    "volatility": 0.3,
+    "hue": 285,
+    "face": 6,
+    "seasons": [
+      3
+    ],
+    "name": {
+      "ru": "Плаксик",
+      "en": "Crybaby"
+    },
+    "tagline": {
+      "ru": "Глаза больше хайпа.",
+      "en": "Eyes bigger than its hype."
+    }
+  },
+  {
+    "id": "sova_skakalka",
+    "rarity": "common",
+    "virality": 1.1,
+    "stamina": 0.7,
+    "volatility": 0.85,
+    "hue": 260,
+    "face": 9,
+    "seasons": [
+      3
+    ],
+    "name": {
+      "ru": "Сова на Скакалке",
+      "en": "Owl on a Rope"
+    },
+    "tagline": {
+      "ru": "Прыгает. Никто не знает зачем.",
+      "en": "Skipping. Nobody knows why."
+    }
+  },
+  {
+    "id": "sedaya_night",
+    "rarity": "epic",
+    "virality": 1.35,
+    "stamina": 0.6,
+    "volatility": 0.95,
+    "hue": 240,
+    "face": 4,
+    "seasons": [
+      3
+    ],
+    "name": {
+      "ru": "Седая Нейро-Ночь",
+      "en": "Neuro Gray Night"
+    },
+    "tagline": {
+      "ru": "ИИ спел — весь рунет заплакал.",
+      "en": "The AI sang. The feed cried."
+    }
+  },
+  {
+    "id": "formula49",
+    "rarity": "common",
+    "virality": 1.0,
+    "stamina": 1.05,
+    "volatility": 0.5,
+    "hue": 130,
+    "face": 2,
+    "seasons": [
+      3
+    ],
+    "name": {
+      "ru": "Формула 49",
+      "en": "Formula 49"
+    },
+    "tagline": {
+      "ru": "Семь на семь. Научно доказано.",
+      "en": "Seven times seven. Peer-reviewed."
+    }
+  },
+  {
+    "id": "musya",
+    "rarity": "rare",
+    "virality": 0.95,
+    "stamina": 1.15,
+    "volatility": 0.55,
+    "hue": 15,
+    "face": 0,
+    "seasons": [
+      3
+    ],
+    "name": {
+      "ru": "Муся, Это Ты?",
+      "en": "Muzya, Is That You?"
+    },
+    "tagline": {
+      "ru": "Кот в трубке. Снова.",
+      "en": "The cat on the phone. Again."
+    }
+  },
+  {
+    "id": "surf_dog",
+    "rarity": "epic",
+    "virality": 1.25,
+    "stamina": 0.8,
+    "volatility": 0.7,
+    "hue": 185,
+    "face": 1,
+    "seasons": [
+      3
+    ],
+    "name": {
+      "ru": "Пёс на Серфе",
+      "en": "Surf Dog"
+    },
+    "tagline": {
+      "ru": "Самый позитивный мем года.",
+      "en": "Most positive meme of the year."
+    }
+  },
+  {
+    "id": "dryas",
+    "rarity": "legendary",
+    "virality": 1.65,
+    "stamina": 0.55,
+    "volatility": 1.0,
+    "hue": 320,
+    "face": 3,
+    "seasons": [
+      3
+    ],
+    "name": {
+      "ru": "Дрысясися",
+      "en": "Dryasysya"
+    },
+    "tagline": {
+      "ru": "Существо, которое никто не просил.",
+      "en": "The creature nobody asked for."
+    }
+  }
 ]

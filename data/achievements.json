@@ -85,8 +85,8 @@
       "en": "Meme archivist"
     },
     "desc": {
-      "ru": "Открой все 12 мемов",
-      "en": "Discover all 12 memes"
+      "ru": "Открой 12 мемов",
+      "en": "Discover 12 memes"
     },
     "icon": "🏛️"
   },
@@ -163,9 +163,22 @@
       "en": "Full archive"
     },
     "desc": {
-      "ru": "Открой все 18 мемов",
-      "en": "Discover all 18 memes"
+      "ru": "Открой 18 мемов",
+      "en": "Discover 18 memes"
     },
     "icon": "🌌"
+  },
+  {
+    "id": "collector26",
+    "reward": 300,
+    "icon": "🌠",
+    "name": {
+      "ru": "Полная коллекция",
+      "en": "Complete Collection"
+    },
+    "desc": {
+      "ru": "Открой все 26 мемов",
+      "en": "Discover all 26 memes"
+    }
   }
 ]

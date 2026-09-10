@@ -15,10 +15,13 @@ export interface UpgradeEffects {
 export function upgradeEffects(save: SaveData): UpgradeEffects {
   const lv = (id: string) => save.upgrades[id] ?? 0;
   const energyLv = lv('energy');
+  // coffee machine: odd levels → +1 max energy, even levels → +1 daily regen
+  const maxEnergyBonus = (energyLv >= 1 ? 1 : 0) + (energyLv >= 3 ? 1 : 0);
+  const regenBonus = (energyLv >= 2 ? 1 : 0) + (energyLv >= 4 ? 1 : 0);
   return {
     startCash: CONFIG.startCash + lv('cash') * 60,
-    maxEnergy: CONFIG.maxEnergy + (energyLv >= 2 ? 1 : 0) + (energyLv >= 4 ? 1 : 0),
-    energyPerDay: CONFIG.energyPerDay + (energyLv >= 1 ? 0 : 0) + (energyLv >= 3 ? 1 : 0),
+    maxEnergy: CONFIG.maxEnergy + maxEnergyBonus,
+    energyPerDay: CONFIG.energyPerDay + regenBonus,
     luck: lv('luck') * 0.12,
     slots: Math.min(CONFIG.maxSlots, CONFIG.baseSlots + lv('slots')),
     boostPower: 1 + lv('insider') * 0.15,

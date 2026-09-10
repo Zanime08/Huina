@@ -97,7 +97,7 @@
   "lb_you": "You",
   "lb_empty": "Empty yet — be the first!",
   "how_title": "How to play",
-  "how_text": "Buy stakes in rising memes (FARM), sell at the peak (SELL). Don't hold cringe — it loses value! Watch the news: it moves hype.",
+  "how_text": "Buy stakes in rising memes (FARM), sell at the peak (SELL). Don't hold cringe — it loses value! Watch the news: it moves hype. Platform fee: 2% per sale.",
   "close": "Close",
   "menu_season_fmt": "Season {n} {t}",
   "menu_streak": "🔥 Streak: {n}",
@@ -107,10 +107,11 @@
   "ms_peak": "📈 {t} AT PEAK! SELL!",
   "ms_cringe": "🥴 {t} slid into cringe...",
   "ms_dead": "💀 {t} is dead. R.I.P.",
-  "season2_unlocked": "✨ New content: {t}!",
   "cos_title": "🎨 Themes",
   "cos_active": "Active",
   "cos_use": "Use",
   "day_banner": "Day {n}",
-  "next_season_pool": "New meme pool in seasons: {n}"
+  "next_season_pool": "New meme pool in seasons: {n}",
+  "season_unlocked": "✨ New content: {t}!",
+  "results_daily_done": "Daily already played — see you tomorrow!"
 }

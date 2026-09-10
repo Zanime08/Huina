@@ -105,10 +105,6 @@ class AudioManager {
 
   stopMusic(): void {
     if (this.musicTimer) { clearInterval(this.musicTimer); this.musicTimer = null; }
-    if (this.musicNodes) {
-      try { this.musicNodes.gain.disconnect(); } catch { /* noop */ }
-      this.musicNodes = null;
-    }
   }
 }
 

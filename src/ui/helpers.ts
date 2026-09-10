@@ -1,4 +1,5 @@
 import type { MemeDef } from '../sim/memeRegistry';
+import { i18n } from './i18n';
 
 export function el<K extends keyof HTMLElementTagNameMap>(
   tag: K, cls = '', html = '',
@@ -11,11 +12,19 @@ export function el<K extends keyof HTMLElementTagNameMap>(
 
 export function fmt(n: number): string {
   const r = Math.round(n * 10) / 10;
-  return Number.isInteger(r) ? r.toLocaleString('ru-RU') : r.toLocaleString('ru-RU', { maximumFractionDigits: 1 });
+  const locale = i18n.lang === 'en' ? 'en-US' : 'ru-RU';
+  return Number.isInteger(r) ? r.toLocaleString(locale) : r.toLocaleString(locale, { maximumFractionDigits: 1 });
 }
 
 export function fmtSigned(n: number): string {
   return (n >= 0 ? '+' : '') + fmt(n);
+}
+
+/** Escape untrusted text (leaderboard names etc.) before it goes through innerHTML. */
+export function esc(s: string): string {
+  return s.replace(/[&<>"']/g, (ch) => (
+    { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[ch] as string
+  ));
 }
 
 let toastWrap: HTMLElement | null = null;

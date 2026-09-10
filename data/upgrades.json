@@ -1,17 +1,89 @@
 [
-  { "id": "cash", "maxLevel": 4, "costs": [120, 260, 500, 900],
-    "name": { "ru": "Стартовый капитал", "en": "Starting capital" },
-    "desc": { "ru": "+60 монет на старте сезона за уровень", "en": "+60 starting coins per level" } },
-  { "id": "energy", "maxLevel": 4, "costs": [150, 320, 600, 1100],
-    "name": { "ru": "Кофе-машина", "en": "Coffee machine" },
-    "desc": { "ru": "+1 макс. энергия (ур. 2, 4), +реген", "en": "+1 max energy (lv 2, 4), +regen" } },
-  { "id": "luck", "maxLevel": 4, "costs": [140, 300, 560, 1000],
-    "name": { "ru": "Чутьё продюсера", "en": "Producer's gut" },
-    "desc": { "ru": "+12% шанс хороших новостей за уровень", "en": "+12% good-news chance per level" } },
-  { "id": "slots", "maxLevel": 2, "costs": [400, 950],
-    "name": { "ru": "Отдел трендов", "en": "Trend department" },
-    "desc": { "ru": "+1 активный мем (макс. 5)", "en": "+1 active meme (max 5)" } },
-  { "id": "insider", "maxLevel": 3, "costs": [200, 450, 850],
-    "name": { "ru": "Инсайдер в платформе", "en": "Platform insider" },
-    "desc": { "ru": "Видеть завтрашние новости + сильнее BOOST", "en": "See tomorrow's news + stronger BOOST" } }
+  {
+    "id": "cash",
+    "maxLevel": 4,
+    "costs": [
+      120,
+      260,
+      500,
+      900
+    ],
+    "name": {
+      "ru": "Стартовый капитал",
+      "en": "Starting capital"
+    },
+    "desc": {
+      "ru": "+60 монет на старте сезона за уровень",
+      "en": "+60 starting coins per level"
+    }
+  },
+  {
+    "id": "energy",
+    "maxLevel": 4,
+    "costs": [
+      150,
+      320,
+      600,
+      1100
+    ],
+    "name": {
+      "ru": "Кофе-машина",
+      "en": "Coffee machine"
+    },
+    "desc": {
+      "ru": "+1 макс. энергия (ур. 1, 3), +1 реген в день (ур. 2, 4)",
+      "en": "+1 max energy (lv 1, 3), +1 daily regen (lv 2, 4)"
+    }
+  },
+  {
+    "id": "luck",
+    "maxLevel": 4,
+    "costs": [
+      140,
+      300,
+      560,
+      1000
+    ],
+    "name": {
+      "ru": "Чутьё продюсера",
+      "en": "Producer's gut"
+    },
+    "desc": {
+      "ru": "+12% шанс хороших новостей за уровень",
+      "en": "+12% good-news chance per level"
+    }
+  },
+  {
+    "id": "slots",
+    "maxLevel": 2,
+    "costs": [
+      400,
+      950
+    ],
+    "name": {
+      "ru": "Отдел трендов",
+      "en": "Trend department"
+    },
+    "desc": {
+      "ru": "+1 активный мем (макс. 5)",
+      "en": "+1 active meme (max 5)"
+    }
+  },
+  {
+    "id": "insider",
+    "maxLevel": 3,
+    "costs": [
+      200,
+      450,
+      850
+    ],
+    "name": {
+      "ru": "Инсайдер в платформе",
+      "en": "Platform insider"
+    },
+    "desc": {
+      "ru": "Видеть завтрашние новости + сильнее BOOST",
+      "en": "See tomorrow's news + stronger BOOST"
+    }
+  }
 ]

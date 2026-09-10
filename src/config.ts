@@ -21,12 +21,14 @@ export const CONFIG = {
   dailyBonus: 50,
   hypeTickRate: 1.6,        // hype drift per second at virality=1
   noiseScale: 6,            // random walk amplitude per second
+  driftK: 0.31,             // lifecycle mean-reversion speed (× meme virality)
   priceBase: 2,             // price = priceBase + hype/100 * priceScale * phaseMult
   priceScale: 18,
+  sellFeePct: 2,            // platform commission on sells — coin sink + anti pump-and-dump
   adCooldownSec: 180,       // min active play between interstitials
   saveVersion: 2,
   streakBonusPerDay: 15,     // extra daily coins per streak day (cap 7)
-  maxSeason: 2,
+  maxSeason: 3,
   cloudSaveDebounceMs: 5000,
 } as const;
 

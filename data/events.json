@@ -1,42 +1,269 @@
 [
-  { "id": "ev_talkshow", "weight": 10, "minDay": 1, "kind": "good", "target": "random", "hype": 25,
-    "text": { "ru": "📺 {meme} попал в вечернее шоу! Хайп +25", "en": "📺 {meme} got on a talk show! Hype +25" } },
-  { "id": "ev_blogger", "weight": 10, "minDay": 1, "kind": "good", "target": "random", "hype": 18,
-    "text": { "ru": "🤳 Топ-блогер запостил {meme}! Хайп +18", "en": "🤳 Top blogger posted {meme}! Hype +18" } },
-  { "id": "ev_remix", "weight": 8, "minDay": 2, "kind": "good", "target": "highest", "hype": 22,
-    "text": { "ru": "🎧 Вышел вирусный ремикс: {meme} +22", "en": "🎧 Viral remix dropped: {meme} +22" } },
-  { "id": "ev_morning", "weight": 7, "minDay": 1, "kind": "good", "target": "lowest", "hype": 30,
-    "text": { "ru": "☕ Утренние паблики проснулись: {meme} +30", "en": "☕ Morning pages woke up: {meme} +30" } },
-  { "id": "ev_ban", "weight": 7, "minDay": 2, "kind": "bad", "target": "highest", "hype": -28,
-    "text": { "ru": "🔨 Платформа режет охваты: {meme} −28", "en": "🔨 Platform throttles reach: {meme} −28" } },
-  { "id": "ev_cringe_wave", "weight": 6, "minDay": 3, "kind": "bad", "target": "random", "hype": -24,
-    "text": { "ru": "🥴 «Это уже кринж», — пишут в комментах: {meme} −24", "en": "🥴 \"That's cringe now\" — comments: {meme} −24" } },
-  { "id": "ev_brands", "weight": 6, "minDay": 4, "kind": "bad", "target": "highest", "hype": -20,
-    "text": { "ru": "🏢 Бренды влезли в {meme}. Мем умирает: −20", "en": "🏢 Brands jumped on {meme}. It's dying: −20" } },
-  { "id": "ev_server", "weight": 4, "minDay": 3, "kind": "bad", "target": "all", "hype": -12,
-    "text": { "ru": "🐈 Кот Котость съел серверную! Всем −12", "en": "🐈 Catitude ate the servers! All −12" } },
-  { "id": "ev_friday", "weight": 5, "minDay": 5, "kind": "good", "target": "all", "hype": 12,
-    "text": { "ru": "🎉 Пятница! Люди скроллят всё подряд: всем +12", "en": "🎉 Friday! Everyone scrolls everything: all +12" } },
-  { "id": "ev_tv", "weight": 4, "minDay": 6, "kind": "bad", "target": "random", "hype": -35,
-    "text": { "ru": "📡 {meme} показали по федеральному ТВ. RIP: −35", "en": "📡 {meme} hit federal TV. RIP: −35" } },
-  { "id": "ev_challenge", "weight": 6, "minDay": 2, "kind": "good", "target": "random", "hype": 35,
-    "text": { "ru": "💃 Запущен челлендж с {meme}! +35", "en": "💃 Challenge launched with {meme}! +35" } },
-  { "id": "ev_leak", "weight": 5, "minDay": 4, "kind": "neutral", "target": "random", "hype": 0, "cash": 40,
-    "text": { "ru": "💰 Слил инсайд конкурентам: +40 монет (совесть −100)", "en": "💰 Leaked insider info: +40 coins (conscience −100)" } },
-  { "id": "ev_coffee", "weight": 5, "minDay": 1, "kind": "neutral", "target": "none", "hype": 0, "energy": 1,
-    "text": { "ru": "⚡ Двойной эспрессо для команды: +1 энергия", "en": "⚡ Double espresso for the team: +1 energy" } },
-  { "id": "ev_burmalda", "weight": 2, "minDay": 3, "kind": "legend", "target": "random", "hype": 60,
-    "text": { "ru": "🌀 БУРМАЛДА ПРОСНУЛАСЬ! {meme} +60!!", "en": "🌀 BURMALDA HAS AWAKENED! {meme} +60!!" } },
-  { "id": "ev_reset", "weight": 2, "minDay": 7, "kind": "legend", "target": "all", "hype": 25,
-    "text": { "ru": "🌌 ВЕЛИКИЙ МЕМ-РЕСЕТ! Всем +25, кринж прощён!", "en": "🌌 THE GREAT MEME RESET! All +25, cringe forgiven!" } },
-  { "id": "ev_monday", "weight": 5, "minDay": 2, "kind": "bad", "target": "all", "hype": -8,
-    "text": { "ru": "😮‍💨 Понедельник. Никто ничего не лайкает: всем −8", "en": "😮‍💨 Monday. Nobody likes anything: all −8" } },
-  { "id": "ev_sept1", "weight": 6, "minDay": 1, "kind": "good", "target": "random", "hype": 20,
-    "text": { "ru": "🎒 1 сентября! Школьники вернулись в сеть: {meme} +20", "en": "🎒 Sept 1st! Kids are back online: {meme} +20" } },
-  { "id": "ev_heating", "weight": 5, "minDay": 3, "kind": "good", "target": "all", "hype": 10,
-    "text": { "ru": "🔥 Дали отопление! Все сидят дома и скроллят: всем +10", "en": "🔥 Heating is on! Everyone scrolls from home: all +10" } },
-  { "id": "ev_aigymn", "weight": 4, "minDay": 5, "kind": "neutral", "target": "random", "hype": 15, "cash": 25,
-    "text": { "ru": "🤖 Нейросеть сочинила гимн {meme}: +15 хайпа, +25 монет роялти", "en": "🤖 AI composed an anthem for {meme}: +15 hype, +25 royalty coins" } },
-  { "id": "ev_halloween", "weight": 4, "minDay": 6, "kind": "good", "target": "lowest", "hype": 34,
-    "text": { "ru": "🎃 Хэллоуин-тизеры! Аутсайдер {meme} воскрес: +34", "en": "🎃 Halloween teasers! Underdog {meme} resurrected: +34" } }
+  {
+    "id": "ev_talkshow",
+    "weight": 10,
+    "minDay": 1,
+    "kind": "good",
+    "target": "random",
+    "hype": 25,
+    "text": {
+      "ru": "📺 {meme} попал в вечернее шоу! Хайп +25",
+      "en": "📺 {meme} got on a talk show! Hype +25"
+    }
+  },
+  {
+    "id": "ev_blogger",
+    "weight": 10,
+    "minDay": 1,
+    "kind": "good",
+    "target": "random",
+    "hype": 18,
+    "text": {
+      "ru": "🤳 Топ-блогер запостил {meme}! Хайп +18",
+      "en": "🤳 Top blogger posted {meme}! Hype +18"
+    }
+  },
+  {
+    "id": "ev_remix",
+    "weight": 8,
+    "minDay": 2,
+    "kind": "good",
+    "target": "highest",
+    "hype": 22,
+    "text": {
+      "ru": "🎧 Вышел вирусный ремикс: {meme} +22",
+      "en": "🎧 Viral remix dropped: {meme} +22"
+    }
+  },
+  {
+    "id": "ev_morning",
+    "weight": 7,
+    "minDay": 1,
+    "kind": "good",
+    "target": "lowest",
+    "hype": 30,
+    "text": {
+      "ru": "☕ Утренние паблики проснулись: {meme} +30",
+      "en": "☕ Morning pages woke up: {meme} +30"
+    }
+  },
+  {
+    "id": "ev_ban",
+    "weight": 7,
+    "minDay": 2,
+    "kind": "bad",
+    "target": "highest",
+    "hype": -28,
+    "text": {
+      "ru": "🔨 Платформа режет охваты: {meme} −28",
+      "en": "🔨 Platform throttles reach: {meme} −28"
+    }
+  },
+  {
+    "id": "ev_cringe_wave",
+    "weight": 6,
+    "minDay": 3,
+    "kind": "bad",
+    "target": "random",
+    "hype": -24,
+    "text": {
+      "ru": "🥴 «Это уже кринж», — пишут в комментах: {meme} −24",
+      "en": "🥴 \"That's cringe now\" — comments: {meme} −24"
+    }
+  },
+  {
+    "id": "ev_brands",
+    "weight": 6,
+    "minDay": 4,
+    "kind": "bad",
+    "target": "highest",
+    "hype": -20,
+    "text": {
+      "ru": "🏢 Бренды влезли в {meme}. Мем умирает: −20",
+      "en": "🏢 Brands jumped on {meme}. It's dying: −20"
+    }
+  },
+  {
+    "id": "ev_server",
+    "weight": 4,
+    "minDay": 3,
+    "kind": "bad",
+    "target": "all",
+    "hype": -12,
+    "text": {
+      "ru": "🐈 Кот Котость съел серверную! Всем −12",
+      "en": "🐈 Catitude ate the servers! All −12"
+    }
+  },
+  {
+    "id": "ev_friday",
+    "weight": 5,
+    "minDay": 5,
+    "kind": "good",
+    "target": "all",
+    "hype": 12,
+    "text": {
+      "ru": "🎉 Пятница! Люди скроллят всё подряд: всем +12",
+      "en": "🎉 Friday! Everyone scrolls everything: all +12"
+    }
+  },
+  {
+    "id": "ev_tv",
+    "weight": 4,
+    "minDay": 6,
+    "kind": "bad",
+    "target": "random",
+    "hype": -35,
+    "text": {
+      "ru": "📡 {meme} показали по федеральному ТВ. RIP: −35",
+      "en": "📡 {meme} hit federal TV. RIP: −35"
+    }
+  },
+  {
+    "id": "ev_challenge",
+    "weight": 6,
+    "minDay": 2,
+    "kind": "good",
+    "target": "random",
+    "hype": 35,
+    "text": {
+      "ru": "💃 Запущен челлендж с {meme}! +35",
+      "en": "💃 Challenge launched with {meme}! +35"
+    }
+  },
+  {
+    "id": "ev_leak",
+    "weight": 5,
+    "minDay": 4,
+    "kind": "neutral",
+    "target": "random",
+    "hype": 0,
+    "cash": 40,
+    "text": {
+      "ru": "💰 Слил инсайд конкурентам: +40 монет (совесть −100)",
+      "en": "💰 Leaked insider info: +40 coins (conscience −100)"
+    }
+  },
+  {
+    "id": "ev_coffee",
+    "weight": 5,
+    "minDay": 1,
+    "kind": "neutral",
+    "target": "none",
+    "hype": 0,
+    "energy": 1,
+    "text": {
+      "ru": "⚡ Двойной эспрессо для команды: +1 энергия",
+      "en": "⚡ Double espresso for the team: +1 energy"
+    }
+  },
+  {
+    "id": "ev_burmalda",
+    "weight": 2,
+    "minDay": 3,
+    "kind": "legend",
+    "target": "random",
+    "hype": 60,
+    "text": {
+      "ru": "🌀 БУРМАЛДА ПРОСНУЛАСЬ! {meme} +60!!",
+      "en": "🌀 BURMALDA HAS AWAKENED! {meme} +60!!"
+    }
+  },
+  {
+    "id": "ev_reset",
+    "weight": 2,
+    "minDay": 7,
+    "kind": "legend",
+    "target": "all",
+    "hype": 25,
+    "text": {
+      "ru": "🌌 ВЕЛИКИЙ МЕМ-РЕСЕТ! Всем +25, кринж прощён!",
+      "en": "🌌 THE GREAT MEME RESET! All +25, cringe forgiven!"
+    }
+  },
+  {
+    "id": "ev_monday",
+    "weight": 5,
+    "minDay": 2,
+    "kind": "bad",
+    "target": "all",
+    "hype": -8,
+    "text": {
+      "ru": "😮‍💨 Понедельник. Никто ничего не лайкает: всем −8",
+      "en": "😮‍💨 Monday. Nobody likes anything: all −8"
+    }
+  },
+  {
+    "id": "ev_sept1",
+    "weight": 6,
+    "minDay": 1,
+    "kind": "good",
+    "target": "random",
+    "hype": 20,
+    "text": {
+      "ru": "🎒 1 сентября! Школьники вернулись в сеть: {meme} +20",
+      "en": "🎒 Sept 1st! Kids are back online: {meme} +20"
+    }
+  },
+  {
+    "id": "ev_heating",
+    "weight": 5,
+    "minDay": 3,
+    "kind": "good",
+    "target": "all",
+    "hype": 10,
+    "text": {
+      "ru": "🔥 Дали отопление! Все сидят дома и скроллят: всем +10",
+      "en": "🔥 Heating is on! Everyone scrolls from home: all +10"
+    }
+  },
+  {
+    "id": "ev_aigymn",
+    "weight": 4,
+    "minDay": 5,
+    "kind": "neutral",
+    "target": "random",
+    "hype": 15,
+    "cash": 25,
+    "text": {
+      "ru": "🤖 Нейросеть сочинила гимн {meme}: +15 хайпа, +25 монет роялти",
+      "en": "🤖 AI composed an anthem for {meme}: +15 hype, +25 royalty coins"
+    }
+  },
+  {
+    "id": "ev_halloween",
+    "weight": 4,
+    "minDay": 6,
+    "kind": "good",
+    "target": "lowest",
+    "hype": 34,
+    "text": {
+      "ru": "🎃 Хэллоуин-тизеры! Аутсайдер {meme} воскрес: +34",
+      "en": "🎃 Halloween teasers! Underdog {meme} resurrected: +34"
+    }
+  },
+  {
+    "id": "ev_puhosos",
+    "weight": 5,
+    "minDay": 2,
+    "kind": "good",
+    "target": "all",
+    "hype": 8,
+    "text": {
+      "ru": "🧹 Пухососы выехали на патруль! Пуха меньше, скролла больше: всем +8",
+      "en": "🧹 Fluff vacuums roll out! Less fluff, more scrolling: +8 to all"
+    }
+  },
+  {
+    "id": "ev_cover",
+    "weight": 6,
+    "minDay": 2,
+    "kind": "good",
+    "target": "random",
+    "hype": 26,
+    "text": {
+      "ru": "🎤 Нейро-кавер на {meme} взорвал чарты! +26",
+      "en": "🎤 A neuro-cover of {meme} tops the charts! +26"
+    }
+  }
 ]

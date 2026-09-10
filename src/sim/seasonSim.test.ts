@@ -3,7 +3,7 @@ import { mulberry32 } from '../core/rng';
 import { MEMES, EVENTS } from './memeRegistry';
 import {
   createSeason, tickSeason, buyMeme, sellMeme, boostMeme,
-  advanceDay, endSeason, seasonResult, netWorth, SimCtx,
+  advanceDay, endSeason, seasonResult, netWorth, sellProceeds, SimCtx,
 } from './seasonSim';
 
 function setup(seed = 12345) {
@@ -34,7 +34,7 @@ describe('seasonSim', () => {
     expect(a.s.news.map((n) => n.eventId)).toEqual(b.s.news.map((n) => n.eventId));
   });
 
-  it('buy/sell moves cash and stake consistently', () => {
+  it('buy/sell moves cash and stake consistently (platform fee applied)', () => {
     const { s } = setup();
     const m = s.memes[0];
     const price = m.price;
@@ -46,7 +46,20 @@ describe('seasonSim', () => {
     const r2 = sellMeme(s, 0, 1, { rng: mulberry32(1), defs: new Map(), events: [] });
     expect(r2.ok).toBe(true);
     expect(m.stake).toBe(0);
-    expect(s.cash).toBeGreaterThan(cashBefore);
+    // instant round-trip at the same price must LOSE the fee — no free money
+    expect(s.cash).toBeCloseTo(cashBefore + sellProceeds(price, 5), 2);
+    expect(s.cash).toBeLessThan(100);
+  });
+
+  it('buying never pumps hype or price (anti pump-and-dump)', () => {
+    const { s } = setup();
+    const m = s.memes[0];
+    const hype = m.hype;
+    const price = m.price;
+    buyMeme(s, 0, 5);
+    buyMeme(s, 0, 5);
+    expect(m.hype).toBe(hype);
+    expect(m.price).toBe(price);
   });
 
   it('rejects buy without cash and sell without stake', () => {

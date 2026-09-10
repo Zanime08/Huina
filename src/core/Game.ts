@@ -31,8 +31,14 @@ export class Game {
   private app: HTMLElement;
 
   constructor(private platform: IPlatform) {
-    this.ads = new AdsService(platform);
+    this.ads = new AdsService(platform, {
+      before: () => audio.stopMusic(),
+      after: () => audio.applySettings(),
+    });
     this.app = document.getElementById('app') as HTMLElement;
+    // Platform-initiated pause (ad, tab switch): silence music immediately.
+    this.platform.onGamePause(() => audio.stopMusic());
+    this.platform.onGameResume(() => audio.applySettings());
     bus.on(Events.ACHIEVEMENT, (id) => {
       const def = ACHIEVEMENTS.find((a) => a.id === id);
       if (def) {
@@ -122,7 +128,7 @@ export class Game {
     this.platform.gameplayStart();
     audio.unlock();
     audio.startMusic();
-    this.show(new GameScreen(state, ctx, this.platform, this.ads, fx.insider, {
+    this.show(new GameScreen(state, ctx, this.platform, this.ads, fx.insider, this.sm, {
       onFinish: (s) => this.finishSeason(s, false),
       onQuit: (s) => this.finishSeason(s, true),
     }));
@@ -135,21 +141,24 @@ export class Game {
     const d = saveManager.data;
     const isDaily = this.mode === 'daily';
 
-    // rewards
-    let reward = rewardForResult(won, stars);
+    // rewards — quitting early never pays out (no daily/streak farming via quit)
+    let reward = 0;
     if (isDaily) {
-      reward += CONFIG.dailyBonus;
-      const today = todayKey(this.platform.serverTime());
-      d.dailyDate = today;
-      const streakBonus = registerStreak(d, today);
-      if (streakBonus > 0) {
-        reward += streakBonus;
-        setTimeout(() => toast(i18n.t('streak_bonus', { n: fmt(streakBonus) }), 'gold'), 800);
+      if (!quit) {
+        reward += rewardForResult(won, stars) + CONFIG.dailyBonus;
+        const today = todayKey(this.platform.serverTime());
+        d.dailyDate = today;
+        const streakBonus = registerStreak(d, today);
+        if (streakBonus > 0) {
+          reward += streakBonus;
+          setTimeout(() => toast(i18n.t('streak_bonus', { n: fmt(streakBonus) }), 'gold'), 800);
+        }
+        unlock('daily');
       }
-      unlock('daily');
     } else {
-      d.seasonsPlayed += 1;
+      reward = rewardForResult(won, stars);
     }
+    if (!quit) d.seasonsPlayed += 1;
     let newBest = false;
     if (!quit && won) {
       if (isDaily) {
@@ -162,12 +171,12 @@ export class Game {
     d.stats.totalProfit += Math.max(0, Math.round(profit));
     d.stats.totalBoosts += s.stats.boosts;
     if (s.stats.burmaldaSeen) d.stats.burmaldaSeen = true;
-    saveManager.addCoins(reward);
+    if (reward > 0) saveManager.addCoins(reward);
     saveManager.saveAll(true);
     analytics.event('season_end', { mode: this.mode, won, stars, profit: Math.round(profit), quit });
 
-    // platform: leaderboard submit (only meaningful scores)
-    if (!quit && won && profit > 0) {
+    // platform: leaderboard submit — only genuine improvements, only for finished runs
+    if (newBest && profit > 0) {
       const board = isDaily ? 'hype_daily_profit' : 'hype_season_profit';
       void this.platform.submitScore(board, profit);
     }

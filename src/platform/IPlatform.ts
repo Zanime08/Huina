@@ -27,4 +27,7 @@ export interface IPlatform {
   gameplayStop(): void;
   loadingReady(): void;
   share(text: string): Promise<boolean>;
+  /** Platform-initiated pause (ad shown, tab backgrounded, etc.). */
+  onGamePause(cb: () => void): void;
+  onGameResume(cb: () => void): void;
 }

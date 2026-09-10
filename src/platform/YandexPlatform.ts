@@ -105,7 +105,7 @@ export class YandexPlatform implements IPlatform {
 
   async submitScore(board: string, score: number): Promise<void> {
     try {
-      if (!this.ysdk.isAvailableMethod?.('leaderboards.setLeaderboardScore')) return;
+      if (!this.ysdk.isAvailableMethod?.('leaderboards.setScore')) return;
       const lb = await this.ysdk.getLeaderboards();
       await lb.setLeaderboardScore(board, Math.round(score));
     } catch (e) {
@@ -164,5 +164,13 @@ export class YandexPlatform implements IPlatform {
     } catch {
       return false;
     }
+  }
+
+  onGamePause(cb: () => void): void {
+    try { this.ysdk?.on?.('game_api_pause', cb); } catch { /* noop */ }
+  }
+
+  onGameResume(cb: () => void): void {
+    try { this.ysdk?.on?.('game_api_resume', cb); } catch { /* noop */ }
   }
 }

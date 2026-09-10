@@ -42,8 +42,13 @@ export function attachDebug(game: Game, platform: IPlatform): void {
     saveManager.saveAll(true);
     game.showMenu();
   });
-  btn('seasonsPlayed=4 (S2)', () => {
+  btn('seasonsPlayed=4 (unlock S2)', () => {
     saveManager.data.seasonsPlayed = 4;
+    saveManager.saveAll(true);
+    game.showMenu();
+  });
+  btn('seasonsPlayed=10 (unlock S3)', () => {
+    saveManager.data.seasonsPlayed = 10;
     saveManager.saveAll(true);
     game.showMenu();
   });

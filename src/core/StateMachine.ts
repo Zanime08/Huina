@@ -6,7 +6,7 @@ const ALLOWED: Record<GameStateId, GameStateId[]> = {
   LOADING: ['MENU'],
   MENU: ['PLAYING'],
   PLAYING: ['PAUSED', 'RESULTS', 'MENU'],
-  PAUSED: ['PLAYING', 'MENU'],
+  PAUSED: ['PLAYING', 'RESULTS', 'MENU'],
   RESULTS: ['MENU', 'PLAYING'],
 };
 

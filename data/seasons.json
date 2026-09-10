@@ -1,6 +1,26 @@
 [
-  { "season": 1, "unlockAfter": 0,
-    "name": { "ru": "«Великий мем-ресет»", "en": "«The Great Meme Reset»" } },
-  { "season": 2, "unlockAfter": 4,
-    "name": { "ru": "«Осень хайпа»", "en": "«Autumn of Hype»" } }
+  {
+    "season": 1,
+    "unlockAfter": 0,
+    "name": {
+      "ru": "«Великий мем-ресет»",
+      "en": "«The Great Meme Reset»"
+    }
+  },
+  {
+    "season": 2,
+    "unlockAfter": 4,
+    "name": {
+      "ru": "«Осень хайпа»",
+      "en": "«Autumn of Hype»"
+    }
+  },
+  {
+    "season": 3,
+    "unlockAfter": 10,
+    "name": {
+      "ru": "«Пуховая лихорадка»",
+      "en": "«Fluff Fever»"
+    }
+  }
 ]

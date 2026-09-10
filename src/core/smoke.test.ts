@@ -77,8 +77,25 @@ describe('game smoke flow', () => {
     await sleep(50);
     const btns = qa('.modal .btn');
     expect(btns.length).toBe(3);
+    expect(game.sm.current).toBe('PAUSED');
     btns[2].click(); // quit
     expect(game.sm.current).toBe('RESULTS');
+  });
+
+  it('daily: quitting early pays nothing and keeps the daily playable', async () => {
+    game.showMenu();
+    click(qa('.btn-row')[0].querySelectorAll('.btn')[0]); // daily
+    expect(game.sm.current).toBe('PLAYING');
+    const coinsBefore = saveManager.data.coins;
+    q<HTMLButtonElement>('.icon-btn').click(); // pause
+    await sleep(50);
+    qa('.modal .btn')[2].click(); // quit
+    expect(game.sm.current).toBe('RESULTS');
+    await sleep(20);
+    expect(saveManager.data.coins).toBe(coinsBefore); // no reward, no daily bonus
+    expect(saveManager.data.dailyDate).toBe('');      // daily not consumed
+    expect(saveManager.data.streak.count).toBe(0);    // no streak farming
+    expect(saveManager.data.seasonsPlayed).toBe(0);   // quit ≠ played season
   });
 
   it('meta screens render and upgrade purchase works', () => {
@@ -95,10 +112,10 @@ describe('game smoke flow', () => {
   it('collection, achievements, settings render; lang switch works', () => {
     game.showMenu();
     click(qa('.btn-row')[1].querySelectorAll('.btn')[0]); // collection
-    expect(qa('.coll-item').length).toBe(18);
+    expect(qa('.coll-item').length).toBe(26);
     game.showMenu();
     click(qa('.btn-row')[1].querySelectorAll('.btn')[1]); // achievements
-    expect(qa('.ach').length).toBe(13);
+    expect(qa('.ach').length).toBe(14);
     game.showMenu();
     click(qa('.btn-row')[1].querySelectorAll('.btn')[2]); // settings
     const sel = q<HTMLSelectElement>('select');

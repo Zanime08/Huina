@@ -1,4 +1,4 @@
-import { el, fmt, fmtSigned, toast } from '../helpers';
+import { el, fmt, fmtSigned, toast, esc } from '../helpers';
 import { i18n } from '../i18n';
 import { audio } from '../../audio/audioManager';
 import { saveManager } from '../../meta/saveManager';
@@ -34,6 +34,8 @@ export class ResultsScreen {
     root.appendChild(el('h2', 'center', won ? i18n.t('results_win') : i18n.t('results_lose')));
     if (won) {
       root.appendChild(el('div', 'stars', '★'.repeat(stars) + '☆'.repeat(3 - stars)));
+    } else if (isDaily && s.gaveUp) {
+      root.appendChild(el('p', 'center muted', i18n.t('results_daily_done')));
     } else {
       root.appendChild(el('p', 'center muted', i18n.t('results_lose_sub')));
     }
@@ -48,32 +50,42 @@ export class ResultsScreen {
     row(i18n.t('results_reward'), `🪙${fmt(baseReward)}`);
     root.appendChild(card);
 
-    const x2 = el('button', 'btn', i18n.t('results_x2'));
-    x2.onclick = async () => {
-      if (this.x2used) return;
-      audio.click();
-      x2.disabled = true;
-      const ok = await this.ads.showRewarded();
-      analytics.event('ad_rewarded', { place: 'x2', ok });
-      if (ok) {
-        this.x2used = true;
-        saveManager.addCoins(baseReward); // second half of x2 (first already granted)
-        toast(i18n.t('toast_reward', { n: baseReward }), 'gold');
-        audio.sell();
-        x2.textContent = '✓ x2';
-      } else {
-        x2.disabled = false;
-        toast(i18n.t('toast_ad_fail'), 'bad');
-      }
-    };
-    root.appendChild(x2);
+    // x2 rewarded — only when a base reward was actually granted (never on quit)
+    if (baseReward > 0 && !s.gaveUp) {
+      const x2 = el('button', 'btn', i18n.t('results_x2'));
+      x2.onclick = async () => {
+        if (this.x2used) return;
+        audio.click();
+        x2.disabled = true;
+        const ok = await this.ads.showRewarded();
+        analytics.event('ad_rewarded', { place: 'x2', ok });
+        if (ok) {
+          this.x2used = true;
+          saveManager.addCoins(baseReward); // second half of x2 (first already granted)
+          toast(i18n.t('toast_reward', { n: baseReward }), 'gold');
+          audio.sell();
+          x2.textContent = '✓ x2';
+        } else {
+          x2.disabled = false;
+          toast(i18n.t('toast_ad_fail'), 'bad');
+        }
+      };
+      root.appendChild(x2);
+    }
 
     const rowBtns = el('div', 'btn-row');
-    const retry = el('button', 'btn primary', i18n.t('results_retry'));
-    retry.onclick = () => { audio.click(); cb.onRetry(); };
-    const menu = el('button', 'btn ghost', i18n.t('results_menu'));
-    menu.onclick = () => { audio.click(); cb.onMenu(); };
-    rowBtns.append(retry, menu);
+    if (isDaily) {
+      // daily is one-shot: "retry" would be a lie — go back to the menu
+      const menuBtn = el('button', 'btn primary', i18n.t('results_menu'));
+      menuBtn.onclick = () => { audio.click(); cb.onMenu(); };
+      rowBtns.appendChild(menuBtn);
+    } else {
+      const retry = el('button', 'btn primary', i18n.t('results_retry'));
+      retry.onclick = () => { audio.click(); cb.onRetry(); };
+      const menu = el('button', 'btn ghost', i18n.t('results_menu'));
+      menu.onclick = () => { audio.click(); cb.onMenu(); };
+      rowBtns.append(retry, menu);
+    }
     root.appendChild(rowBtns);
 
     const share = el('button', 'btn ghost small', i18n.t('results_share'));

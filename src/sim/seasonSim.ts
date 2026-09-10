@@ -142,7 +142,7 @@ export function tickSeason(s: SeasonState, dt: number, ctx: SimCtx): void {
     const p = Math.min(1, (m.ageDays + s.dayT) / m.lifespan);
     // lifecycle curve: rise to 1.0 at p=0.5, fall to 0 at p=1
     const expected = 100 * Math.pow(Math.sin(Math.PI * Math.min(0.999, Math.max(0.001, p))), 0.7);
-    const k = 0.25 * def.virality;
+    const k = CONFIG.driftK * def.virality;
     const drift = (expected - m.hype) * k * dt * 0.25;
     const noise = (ctx.rng() - 0.5) * 2 * CONFIG.noiseScale * def.volatility * Math.sqrt(dt) * 0.4;
     const before = m.hype;
@@ -159,10 +159,6 @@ export function tickSeason(s: SeasonState, dt: number, ctx: SimCtx): void {
     }
     m.price = priceOf(m);
   }
-  if (s.cash + portfolioValue(s) < s.startCash) {
-    // red tracking sampled at day end instead — keep maxCash here
-  }
-  s.stats.maxCash = Math.max(s.stats.maxCash, s.cash);
   if (s.dayT >= 1) advanceDay(s, ctx);
 }
 
@@ -270,6 +266,11 @@ export function advanceDay(s: SeasonState, ctx: SimCtx): void {
 
 export type ActionResult = { ok: boolean; reason?: string };
 
+/** Net proceeds of selling n shares at current price, after the platform fee. */
+export function sellProceeds(price: number, n: number): number {
+  return Math.round(price * n * (1 - CONFIG.sellFeePct / 100) * 10) / 10;
+}
+
 export function buyMeme(s: SeasonState, idx: number, shares: number): ActionResult {
   const m = s.memes[idx];
   if (!m || m.dead) return { ok: false, reason: 'dead' };
@@ -278,9 +279,7 @@ export function buyMeme(s: SeasonState, idx: number, shares: number): ActionResu
   s.cash = Math.round((s.cash - cost) * 10) / 10;
   m.stake += shares;
   m.invested = Math.round((m.invested + cost) * 10) / 10;
-  m.hype = Math.min(100, m.hype + shares * 0.5); // forcing the trend a bit
-  m.phase = phaseOf(m);
-  m.price = priceOf(m);
+  // NOTE: buying deliberately does NOT move hype/price — pump-and-dump is not a strategy here.
   return { ok: true };
 }
 
@@ -290,7 +289,7 @@ export function sellMeme(s: SeasonState, idx: number, frac: 0.5 | 1, ctx: SimCtx
   if (m.stake <= 0) return { ok: false, reason: 'stake' };
   let n = frac === 1 ? m.stake : Math.max(1, Math.floor(m.stake / 2));
   n = Math.min(n, m.stake);
-  const gain = Math.round(m.price * n * 10) / 10;
+  const gain = sellProceeds(m.price, n);
   const costBasis = (m.invested / m.stake) * n;
   s.cash = Math.round((s.cash + gain) * 10) / 10;
   s.stats.earned = Math.round((s.stats.earned + gain) * 10) / 10;
@@ -318,10 +317,10 @@ export function boostMeme(s: SeasonState, idx: number, ctx: SimCtx): ActionResul
 
 export function endSeason(s: SeasonState): void {
   if (s.over) return;
-  // auto-liquidate everything at current prices
+  // auto-liquidate everything at current prices (same platform fee as manual sells)
   for (const m of s.memes) {
     if (m.stake > 0 && !m.dead) {
-      s.cash = Math.round((s.cash + m.price * m.stake) * 10) / 10;
+      s.cash = Math.round((s.cash + sellProceeds(m.price, m.stake)) * 10) / 10;
       m.stake = 0;
     }
   }

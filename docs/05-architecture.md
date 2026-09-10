@@ -74,3 +74,36 @@ public/
 Unit (vitest): жизненный цикл мемов, цены/профит, миграции сейвов, дейлик-сиды, награды.
 Сценарные: 28 сценариев из ТЗ (чеклист в docs/08-qa.md), ручной прогон + debug-панель
 (simulate ad fail, corrupt save, small viewport эмуляция).
+
+---
+
+## 6. Изменения v1.0
+
+**Платформенный слой**
+- `IPlatform` + `onGamePause()/onGameResume()` — подписка на `game_api_pause/resume`
+  Yandex SDK; Game глушит/возвращает музыку на платформенной паузе.
+- `AdsService` получил hooks `before/after`: перед ЛЮБОЙ рекламой музыка глушится,
+  после — восстанавливается (требование модерации «mute sounds during ads»).
+  Раньше rewarded из паузы шёл с играющей музыкой.
+- Исправлено имя метода проверки доступности: `leaderboards.setScore`
+  (было `leaderboards.setLeaderboardScore` — по актуальной документации SDK).
+- Rewarded-бейлаут больше НЕ снимает паузу симуляции на время показа: мир не тикает,
+  пока рекламa закрывает экран.
+
+**Состояния**
+- `PAUSED` теперь реальное состояние SM (был мёртвый boolean): showPause → PAUSED,
+  resume → PLAYING, quit из паузы → RESULTS (переход добавлен в таблицу).
+
+**Сохранения/сеть**
+- Service Worker переведён на network-first с кэш-фолбэком (был cache-first —
+  игроки застревали на старом билде после обновления). Версия кэша v2.
+- Аналитика: + `tutorial_start`, + `session_end {sec}` (pagehide/visibilitychange).
+
+**Прочее**
+- `esc()` для недоверенных строк: имена игроков из лидерборда рендерятся текстом
+  (закрыт XSS через publicName других пользователей).
+- Sparkline-графики перерисовываются раз в игровой день, а не 60 раз/сек
+  (строковое сравнение `dataset.day` вместо number!==string).
+- Мёртвый код удалён: `musicNodes`, пустой блок red-tracking, expr `(lv>=1?0:0)`.
+- Удалена неиспользуемая dev-зависимость playwright.
+- Magic numbers вынесены в CONFIG: `sellFeePct`, `driftK`.

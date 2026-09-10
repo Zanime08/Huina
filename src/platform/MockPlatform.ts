@@ -33,6 +33,8 @@ export class MockPlatform implements IPlatform {
   gameplayStart(): void { /* noop */ }
   gameplayStop(): void { /* noop */ }
   loadingReady(): void { /* noop */ }
+  onGamePause(): void { /* noop */ }
+  onGameResume(): void { /* noop */ }
 
   async share(text: string): Promise<boolean> {
     try {
