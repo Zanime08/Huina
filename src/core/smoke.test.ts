@@ -82,6 +82,19 @@ describe('game smoke flow', () => {
     expect(game.sm.current).toBe('RESULTS');
   });
 
+  it('save migration v2 → v3: weekly tournament fields defaulted, progress kept', () => {
+    const v2 = { ...saveManager.data, saveVersion: 2, coins: 555, seasonsPlayed: 7 };
+    delete (v2 as Partial<typeof v2>).weeklyBest;
+    delete (v2 as Partial<typeof v2>).weeklyDate;
+    localStorage.setItem('hype_factory_save_v1', JSON.stringify(v2));
+    saveManager.loadLocal();
+    expect(saveManager.data.saveVersion).toBe(3);
+    expect(saveManager.data.coins).toBe(555);          // old progress intact
+    expect(saveManager.data.seasonsPlayed).toBe(7);
+    expect(saveManager.data.weeklyBest).toBe(0);       // new fields defaulted
+    expect(saveManager.data.weeklyDate).toBe('');
+  });
+
   it('daily: quitting early pays nothing and keeps the daily playable', async () => {
     game.showMenu();
     click(qa('.btn-row')[0].querySelectorAll('.btn')[0]); // daily
@@ -97,6 +110,30 @@ describe('game smoke flow', () => {
     expect(saveManager.data.streak.count).toBe(0);    // no streak farming
     expect(saveManager.data.seasonsPlayed).toBe(0);   // quit ≠ played season
   });
+
+  it('weekly tournament: first run of the week pays, retry improves best but pays again', async () => {
+    game.showMenu();
+    click(q('.btn.weekly')); // tournament button
+    expect(game.sm.current).toBe('PLAYING');
+    type Scr = { s: { day: number; dayT: number; cash: number } };
+    const screen1 = (game as unknown as { current: Scr }).current;
+    screen1.s.day = 10; screen1.s.dayT = 0.999; screen1.s.cash = 900; // win, profit ≈ 800
+    await sleep(400);
+    expect(game.sm.current).toBe('RESULTS');
+    const coins1 = saveManager.data.coins;
+    expect(coins1).toBeGreaterThan(0);
+    expect(saveManager.data.weeklyBest).toBeGreaterThan(250);
+    expect(saveManager.data.weeklyDate).not.toBe('');
+    // retry — same shared seed, better line: leaderboard improves, coins don't double
+    q<HTMLButtonElement>('.btn.primary').click(); // retry
+    expect(game.sm.current).toBe('PLAYING');
+    const screen2 = (game as unknown as { current: Scr }).current;
+    screen2.s.day = 10; screen2.s.dayT = 0.999; screen2.s.cash = 1500; // profit ≈ 1400
+    await sleep(400);
+    expect(game.sm.current).toBe('RESULTS');
+    expect(saveManager.data.coins).toBe(coins1); // second rewarded run of the week: no coins
+    expect(saveManager.data.weeklyBest).toBeGreaterThanOrEqual(1400);
+  }, 10000);
 
   it('meta screens render and upgrade purchase works', () => {
     saveManager.addCoins(1000);

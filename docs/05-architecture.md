@@ -107,3 +107,14 @@ Unit (vitest): жизненный цикл мемов, цены/профит, м
 - Мёртвый код удалён: `musicNodes`, пустой блок red-tracking, expr `(lv>=1?0:0)`.
 - Удалена неиспользуемая dev-зависимость playwright.
 - Magic numbers вынесены в CONFIG: `sellFeePct`, `driftK`.
+
+---
+
+## 7. Изменения v1.1
+- `IPlatform.isAuthorized()` — по `player.getMode()` ('full' = облако/лидерборды доступны).
+- `SettingsScreen` принимает платформу и рисует строку входа (только на реальной платформе).
+- `meta/daily.ts`: `weekKey()` (ISO-8601 неделя, UTC) + `weeklySeed()` — общий сид турнира.
+- `Game`: Mode расширен до 'weekly'; reward-once-в-неделю через `weeklyDate`;
+  ретраи турнира не влияют на прогрессию и экономику.
+- Сохранения: saveVersion 3 (+weeklyBest/weeklyDate), миграция v2→v3.
+- `npm run package` — сборка + ZIP для консоли Яндекс Игр.

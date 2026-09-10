@@ -10,6 +10,7 @@ export class YandexPlatform implements IPlatform {
   private ysdk: any = null;
   private player: any = null;
   private name: string | null = null;
+  private authed = false;
 
   async init(): Promise<void> {
     if (!window.YaGames) throw new Error('YaGames missing');
@@ -22,10 +23,16 @@ export class YandexPlatform implements IPlatform {
       this.player = await this.ysdk.getPlayer({ signed: false });
       const n = this.player?.getName?.();
       if (n) this.name = n;
+      // 'full' = authorized player (cloud saves + leaderboards available)
+      this.authed = this.player?.getMode?.() === 'full' || !!n;
     } catch (e) {
       console.warn('[ysdk] player unavailable', e);
       this.player = null;
     }
+  }
+
+  isAuthorized(): boolean {
+    return this.authed;
   }
 
   getLang(): Lang {
@@ -135,6 +142,7 @@ export class YandexPlatform implements IPlatform {
       await this.ysdk.auth.openAuthDialog();
       this.player = await this.ysdk.getPlayer({ signed: false });
       this.name = this.player?.getName?.() ?? null;
+      this.authed = this.player?.getMode?.() === 'full' || !!this.name;
       return this.name;
     } catch {
       return null;

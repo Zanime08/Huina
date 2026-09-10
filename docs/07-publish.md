@@ -2,10 +2,9 @@
 
 ## 1. Сборка
 ```bash
-npm run build
-cd dist && zip -r ../hype-factory.zip .   # index.html в корне архива!
+npm run package        # = build + zip → hype-factory-<version>.zip
 ```
-Проверь: в архиве `index.html`, `sw.js`, `assets/*`. Пути относительные (`base: './'`).
+Проверь: в архиве `index.html` (в корне!), `sw.js`, `assets/*`. Пути относительные (`base: './'`).
 
 ## 2. Черновик в консоли
 1. https://games.yandex.ru/console → «Добавить игру».
@@ -22,6 +21,7 @@ cd dist && zip -r ../hype-factory.zip .   # index.html в корне архив�
 Создай два, имена ТОЧНО такие (используются в коде):
 - `hype_season_profit` — «Лучший профит» (порядок: по убыванию)
 - `hype_daily_profit` — «Дейлик» (по убыванию)
+- `hype_weekly_profit` — «Турнир недели» (по убыванию)
 
 ## 5. Промо-материалы
 - Иконка 512×512, обложка 800×450: реальный геймплей ≥70% кадра.

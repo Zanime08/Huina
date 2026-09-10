@@ -3,12 +3,14 @@ import { i18n } from '../i18n';
 import { saveManager } from '../../meta/saveManager';
 import { goalForSeason, seasonNumber, studioTier, STUDIO_EMOJI, contentSeason, contentSeasonName } from '../../sim/economy';
 import { SEASONS, ACHIEVEMENTS } from '../../sim/memeRegistry';
+import { weekKey } from '../../meta/daily';
 import { audio } from '../../audio/audioManager';
 import type { IPlatform } from '../../platform/IPlatform';
 
 export interface MenuCallbacks {
   onPlay(): void;
   onDaily(): void;
+  onWeekly(): void;
   onUpgrades(): void;
   onCollection(): void;
   onAchievements(): void;
@@ -20,7 +22,6 @@ export class MenuScreen {
   readonly root: HTMLElement;
 
   constructor(platform: IPlatform, cb: MenuCallbacks) {
-    void platform;
     const d = saveManager.data;
     const goal = goalForSeason(seasonNumber(d));
     const tier = studioTier(d);
@@ -45,6 +46,16 @@ export class MenuScreen {
     const play = el('button', 'btn primary', i18n.t('menu_play'));
     play.onclick = () => { audio.unlock(); audio.click(); cb.onPlay(); };
     root.appendChild(play);
+
+    // weekly tournament: shared seed, retries allowed, reward once per week
+    const wk = weekKey(platform.serverTime());
+    const rewarded = d.weeklyDate === wk;
+    const weeklyLabel = rewarded
+      ? `${i18n.t('menu_weekly')} · ✓`
+      : `${i18n.t('menu_weekly')}${d.weeklyBest > 0 ? ` · ${i18n.t('weekly_best')}: ${fmt(d.weeklyBest)}` : ''}`;
+    const weekly = el('button', 'btn ghost weekly', weeklyLabel);
+    weekly.onclick = () => { audio.unlock(); audio.click(); cb.onWeekly(); };
+    root.appendChild(weekly);
 
     const row1 = el('div', 'btn-row');
     const daily = el('button', 'btn ghost', i18n.t('menu_daily'));

@@ -7,7 +7,7 @@ import { createSeason, seasonResult, SeasonState, SimCtx } from '../sim/seasonSi
 import { upgradeEffects, goalForSeason, seasonNumber, rewardForResult, contentSeason, contentSeasonName, registerStreak } from '../sim/economy';
 import { saveManager } from '../meta/saveManager';
 import { checkSeasonAchievements, unlock } from '../meta/achievements';
-import { dailySeed, todayKey } from '../meta/daily';
+import { dailySeed, todayKey, weeklySeed, weekKey } from '../meta/daily';
 import { analytics } from '../meta/analytics';
 import type { IPlatform } from '../platform/IPlatform';
 import { AdsService } from '../platform/AdsService';
@@ -19,7 +19,7 @@ import { ResultsScreen } from '../ui/screens/ResultsScreen';
 import { UpgradesScreen, CollectionScreen, AchievementsScreen, SettingsScreen } from '../ui/screens/MetaScreens';
 import { audio } from '../audio/audioManager';
 
-type Mode = 'normal' | 'daily';
+type Mode = 'normal' | 'daily' | 'weekly';
 
 interface Screen { readonly root: HTMLElement; destroy(): void; }
 
@@ -80,10 +80,11 @@ export class Game {
     this.show(new MenuScreen(this.platform, {
       onPlay: () => this.startSeason('normal'),
       onDaily: () => this.startDaily(),
+      onWeekly: () => this.startWeekly(),
       onUpgrades: () => this.show(new UpgradesScreen(() => this.showMenu())),
       onCollection: () => this.show(new CollectionScreen(() => this.showMenu())),
       onAchievements: () => this.show(new AchievementsScreen(() => this.showMenu())),
-      onSettings: () => this.show(new SettingsScreen(() => this.showMenu(), () => { this.applyLang(); this.showMenu(); })),
+      onSettings: () => this.show(new SettingsScreen(() => this.showMenu(), () => { this.applyLang(); this.showMenu(); }, this.platform)),
       onHow: () => modal(i18n.t('how_title'), el('div', '', i18n.t('how_text')), [{ label: i18n.t('close'), cls: 'primary' }]),
     }));
   }
@@ -98,15 +99,28 @@ export class Game {
     this.startSeason('daily');
   }
 
+  /** Weekly tournament: one shared seed for everyone, retries allowed, coins once a week. */
+  private startWeekly(): void {
+    this.startSeason('weekly');
+  }
+
   private startSeason(mode: Mode): void {
     this.mode = mode;
     if (!this.sm.go('PLAYING')) return;
     const d = saveManager.data;
     const fx = upgradeEffects(d);
-    const seed = mode === 'daily' ? dailySeed(this.platform.serverTime()) : (Math.random() * 2 ** 31) | 0;
+    const now = this.platform.serverTime();
+    const seed = mode === 'daily' ? dailySeed(now)
+      : mode === 'weekly' ? weeklySeed(now)
+      : (Math.random() * 2 ** 31) | 0;
     const rng = mulberry32(seed);
-    const goal = mode === 'daily' ? CONFIG.goalProfit : goalForSeason(seasonNumber(d));
-    const cs = mode === 'daily' ? 1 + (dailySeed(this.platform.serverTime()) % CONFIG.maxSeason) : contentSeason(d);
+    const goal = mode === 'daily' ? CONFIG.goalProfit
+      : mode === 'weekly' ? CONFIG.weeklyGoal
+      : goalForSeason(seasonNumber(d));
+    // daily rotates content pools; weekly always showcases the newest season
+    const cs = mode === 'daily' ? 1 + (dailySeed(now) % CONFIG.maxSeason)
+      : mode === 'weekly' ? CONFIG.maxSeason
+      : contentSeason(d);
     analytics.event('season_start', { mode, goal, contentSeason: cs });
     const state = createSeason(poolForSeason(cs), EVENTS, {
       slots: fx.slots,
@@ -140,6 +154,7 @@ export class Game {
     const { profit, won, stars } = seasonResult(s);
     const d = saveManager.data;
     const isDaily = this.mode === 'daily';
+    const isWeekly = this.mode === 'weekly';
 
     // rewards — quitting early never pays out (no daily/streak farming via quit)
     let reward = 0;
@@ -155,15 +170,29 @@ export class Game {
         }
         unlock('daily');
       }
+    } else if (isWeekly) {
+      if (!quit) {
+        // coins only for the FIRST finished tournament run of the week;
+        // retries keep competing for the leaderboard without re-minting coins
+        const wk = weekKey(this.platform.serverTime());
+        if (d.weeklyDate !== wk) {
+          reward = rewardForResult(won, stars) + CONFIG.weeklyBonus;
+          d.weeklyDate = wk;
+        }
+      }
     } else {
       reward = rewardForResult(won, stars);
     }
-    if (!quit) d.seasonsPlayed += 1;
+    // tournament retries run the same seed — they must not inflate progression
+    if (!quit && !isWeekly) d.seasonsPlayed += 1;
     let newBest = false;
-    if (!quit && won) {
+    if (!quit && profit > 0) {
       if (isDaily) {
-        if (profit > d.dailyBest) { d.dailyBest = Math.round(profit); newBest = true; }
-      } else {
+        if (won && profit > d.dailyBest) { d.dailyBest = Math.round(profit); newBest = true; }
+      } else if (isWeekly) {
+        // tournament ranks everyone: any profit improvement counts, win not required
+        if (profit > d.weeklyBest) { d.weeklyBest = Math.round(profit); newBest = true; }
+      } else if (won) {
         if (profit > d.best) { d.best = Math.round(profit); newBest = true; }
         if (profit > d.bestWeek) d.bestWeek = Math.round(profit);
       }
@@ -177,7 +206,7 @@ export class Game {
 
     // platform: leaderboard submit — only genuine improvements, only for finished runs
     if (newBest && profit > 0) {
-      const board = isDaily ? 'hype_daily_profit' : 'hype_season_profit';
+      const board = isDaily ? 'hype_daily_profit' : isWeekly ? 'hype_weekly_profit' : 'hype_season_profit';
       void this.platform.submitScore(board, profit);
     }
 
@@ -189,7 +218,7 @@ export class Game {
         if (isDaily) this.showMenu(); // daily: one shot
         else {
           this.sm.go('MENU');
-          this.startSeason('normal');
+          this.startSeason(this.mode); // normal/weekly: retry the same mode (weekly keeps its shared seed)
         }
       },
       onMenu: () => this.showMenu(),

@@ -6,6 +6,7 @@ import { analytics } from '../../meta/analytics';
 import { UPGRADES, ACHIEVEMENTS, MEMES, COSMETICS } from '../../sim/memeRegistry';
 import { upgradeCost, studioTier, STUDIO_EMOJI } from '../../sim/economy';
 import { applyCosmetic } from '../cosmetics';
+import type { IPlatform } from '../../platform/IPlatform';
 
 function topbar(title: string, onBack: () => void, coins = true): HTMLElement {
   const bar = el('div', 'topbar');
@@ -158,10 +159,16 @@ export class AchievementsScreen {
 
 export class SettingsScreen {
   readonly root: HTMLElement;
-  constructor(onBack: () => void, onLang: () => void) {
+  constructor(onBack: () => void, onLang: () => void, private platform?: IPlatform) {
     const s = saveManager.data.settings;
     const root = el('div', 'screen');
     root.appendChild(topbar(i18n.t('set_title'), onBack, false));
+    // account / cloud saves row (only on the real platform — mock needs no login)
+    if (this.platform?.isReal) {
+      const accCard = el('div', 'card');
+      this.renderAccount(accCard);
+      if (accCard.children.length > 0) root.appendChild(accCard);
+    }
     const card = el('div', 'card');
 
     const langRow = el('div', 'settings-row');
@@ -218,5 +225,35 @@ export class SettingsScreen {
     root.appendChild(reset);
     this.root = root;
   }
+
+  /** Login row for the real platform: cloud saves + leaderboards need authorization. */
+  private renderAccount(card: HTMLElement): void {
+    if (!this.platform) return;
+    if (this.platform.isAuthorized()) return; // already logged in — nothing to sell here
+    const row = el('div', 'settings-row');
+    row.appendChild(el('span', '', i18n.t('set_account')));
+    const login = el('button', 'btn small', i18n.t('auth_login')) as HTMLButtonElement;
+    login.style.width = 'auto';
+    login.onclick = async () => {
+      audio.click();
+      login.disabled = true;
+      const name = await this.platform?.auth();
+      if (name) {
+        saveManager.saveAll(true); // push local progress to the fresh cloud slot
+        toast(i18n.t('auth_hello', { n: name }), 'gold');
+        audio.sell();
+      } else {
+        toast(i18n.t('auth_fail'), 'bad');
+        audio.error();
+        login.disabled = false;
+      }
+    };
+    row.appendChild(login);
+    card.appendChild(row);
+    const hint = el('div', 'muted', i18n.t('set_login_hint'));
+    hint.style.fontSize = '11px';
+    card.appendChild(hint);
+  }
+
   destroy(): void { this.root.remove(); }
 }

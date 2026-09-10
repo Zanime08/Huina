@@ -113,5 +113,10 @@
   "day_banner": "Day {n}",
   "next_season_pool": "New meme pool in seasons: {n}",
   "season_unlocked": "✨ New content: {t}!",
-  "results_daily_done": "Daily already played — see you tomorrow!"
+  "results_daily_done": "Daily already played — see you tomorrow!",
+  "menu_weekly": "🏆 Weekly Tournament",
+  "weekly_best": "best",
+  "set_account": "☁️ Yandex account",
+  "auth_fail": "Couldn't sign in. Try again later.",
+  "set_login_hint": "Sign in to enable cloud saves and leaderboards"
 }

@@ -30,6 +30,7 @@ export class MockPlatform implements IPlatform {
   async submitScore(): Promise<void> { /* noop */ }
   async getBoard(): Promise<LeaderboardEntry[]> { return []; }
   async auth(): Promise<string | null> { return 'Тестер'; }
+  isAuthorized(): boolean { return true; }
   gameplayStart(): void { /* noop */ }
   gameplayStop(): void { /* noop */ }
   loadingReady(): void { /* noop */ }

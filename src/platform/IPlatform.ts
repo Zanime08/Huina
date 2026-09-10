@@ -23,6 +23,8 @@ export interface IPlatform {
   submitScore(board: string, score: number): Promise<void>;
   getBoard(board: string): Promise<LeaderboardEntry[]>;
   auth(): Promise<string | null>; // returns display name or null
+  /** True when cloud saves / leaderboards are usable for this player. */
+  isAuthorized(): boolean;
   gameplayStart(): void;
   gameplayStop(): void;
   loadingReady(): void;

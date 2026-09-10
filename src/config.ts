@@ -26,9 +26,11 @@ export const CONFIG = {
   priceScale: 18,
   sellFeePct: 2,            // platform commission on sells — coin sink + anti pump-and-dump
   adCooldownSec: 180,       // min active play between interstitials
-  saveVersion: 2,
+  saveVersion: 3,
   streakBonusPerDay: 15,     // extra daily coins per streak day (cap 7)
   maxSeason: 3,
+  weeklyGoal: 250,          // tournament profit goal (harder than normal season 1)
+  weeklyBonus: 80,          // extra coins for the FIRST finished tournament run of the week
   cloudSaveDebounceMs: 5000,
 } as const;
 

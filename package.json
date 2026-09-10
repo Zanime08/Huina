@@ -1,12 +1,13 @@
 {
   "name": "hype-factory",
   "private": true,
-  "version": "0.2.0",
+  "version": "1.1.0",
   "type": "module",
   "description": "HYPE FACTORY — meme trend manager game for Yandex Games",
   "scripts": {
     "dev": "vite",
     "build": "tsc --noEmit && vite build",
+    "package": "npm run build && cd dist && zip -r ../hype-factory-$npm_package_version.zip .",
     "preview": "vite preview",
     "test": "vitest run",
     "test:watch": "vitest"

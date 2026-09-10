@@ -17,6 +17,8 @@ export interface SaveData {
   bestWeekStart: string;
   dailyBest: number;
   dailyDate: string;      // yyyy-mm-dd of last played daily
+  weeklyBest: number;     // tournament: best profit this account has ever posted
+  weeklyDate: string;     // weekKey of the last REWARDED tournament run (reward once/week)
   seasonsPlayed: number;
   tutorialDone: boolean;
   cosmetics: { owned: string[]; active: string };
@@ -33,6 +35,7 @@ export function defaultSave(): SaveData {
     saveVersion: CONFIG.saveVersion,
     coins: 0, upgrades: {}, collection: [], achievements: [],
     best: 0, bestWeek: 0, bestWeekStart: '', dailyBest: 0, dailyDate: '',
+    weeklyBest: 0, weeklyDate: '',
     seasonsPlayed: 0, tutorialDone: false,
     cosmetics: { owned: ['neon'], active: 'neon' },
     streak: { count: 0, lastDate: '' },
@@ -64,6 +67,11 @@ function migrate(raw: unknown): SaveData {
   // v1 → v2: cosmetics + streak defaulted above; nothing else changed
   if (from < 2) {
     if (!out.cosmetics.owned.includes('neon')) out.cosmetics.owned.unshift('neon');
+  }
+  // v2 → v3: weekly tournament fields defaulted via `def` spread; guard types here
+  if (from < 3) {
+    if (typeof out.weeklyBest !== 'number' || out.weeklyBest < 0 || out.weeklyBest > 1e9) out.weeklyBest = 0;
+    if (typeof out.weeklyDate !== 'string') out.weeklyDate = '';
   }
   if (typeof out.coins !== 'number' || out.coins < 0 || out.coins > 1e9) out.coins = 0;
   if (!Array.isArray(out.collection)) out.collection = [];

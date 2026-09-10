@@ -87,9 +87,11 @@ describe('content season & streak', () => {
     expect(d.streak.count).toBe(1);
   });
 
-  it('migrates v1 saves to v2 with defaults', () => {
+  it('defaults carry the current save version (3) with weekly fields', () => {
     const d = defaultSave();
-    expect(d.saveVersion).toBe(2);
+    expect(d.saveVersion).toBe(3);
+    expect(d.weeklyBest).toBe(0);
+    expect(d.weeklyDate).toBe('');
     expect(d.cosmetics).toEqual({ owned: ['neon'], active: 'neon' });
     expect(d.streak).toEqual({ count: 0, lastDate: '' });
   });
