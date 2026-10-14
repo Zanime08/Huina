@@ -219,41 +219,55 @@ Sub SetFieldProps(tName, fName, size, fmt, rule, req, allowZ, vtext, defv)
   On Error GoTo 0
 End Sub
 
-Sub LookupValue(tName, fName, list)
-  Dim fld, p
-  Set fld = db.TableDefs(tName).Fields(fName)
+Sub SetFldProp(fld, pName, pType, pValue)
+  Dim p
   On Error Resume Next
-  Set p = fld.CreateProperty("DisplayControl", 3, 111)
-  fld.Properties.Append p
-  Set p = fld.CreateProperty("RowSourceType", 10, "Value List")
-  fld.Properties.Append p
-  Set p = fld.CreateProperty("RowSource", 10, list)
-  fld.Properties.Append p
-  Set p = fld.CreateProperty("LimitToList", 1, True)
-  fld.Properties.Append p
+  Err.Clear
+  fld.Properties(pName).Value = pValue
+  If Err.Number <> 0 Then
+    Err.Clear
+    Set p = fld.CreateProperty(pName, pType, pValue)
+    fld.Properties.Append p
+  End If
+  Err.Clear
   On Error GoTo 0
 End Sub
 
-Sub LookupTable(tName, fName, srcTable, boundF, dispF)
-  Dim fld, p, sql
-  sql = "SELECT [" & boundF & "], [" & dispF & "] FROM [" & srcTable & "] ORDER BY [" & dispF & "]"
+Sub LookupValue(tName, fName, list)
+  ' Как мастер подстановок: фиксированный набор значений, поле со списком
+  Dim fld
   Set fld = db.TableDefs(tName).Fields(fName)
-  On Error Resume Next
-  Set p = fld.CreateProperty("DisplayControl", 3, 111)
-  fld.Properties.Append p
-  Set p = fld.CreateProperty("RowSourceType", 10, "Table/Query")
-  fld.Properties.Append p
-  Set p = fld.CreateProperty("RowSource", 10, sql)
-  fld.Properties.Append p
-  Set p = fld.CreateProperty("BoundColumn", 3, 1)
-  fld.Properties.Append p
-  Set p = fld.CreateProperty("ColumnCount", 3, 2)
-  fld.Properties.Append p
-  Set p = fld.CreateProperty("ColumnWidths", 10, "0cm;3cm")
-  fld.Properties.Append p
-  Set p = fld.CreateProperty("LimitToList", 1, True)
-  fld.Properties.Append p
-  On Error GoTo 0
+  Call SetFldProp(fld, "DisplayControl", 3, 111)
+  Call SetFldProp(fld, "RowSourceType", 10, "Value List")
+  Call SetFldProp(fld, "RowSource", 10, list)
+  Call SetFldProp(fld, "BoundColumn", 4, 1)
+  Call SetFldProp(fld, "ColumnCount", 4, 1)
+  Call SetFldProp(fld, "ColumnWidths", 10, "2,54см")
+  Call SetFldProp(fld, "ListRows", 4, 8)
+  Call SetFldProp(fld, "ListWidth", 10, "2,54см")
+  Call SetFldProp(fld, "LimitToList", 1, True)
+  Call SetFldProp(fld, "AllowValueListEdits", 1, False)
+  Call SetFldProp(fld, "ShowOnlyRowSourceValues", 1, True)
+End Sub
+
+Sub LookupTable(tName, fName, srcTable, boundF, dispF)
+  ' Как мастер подстановок: значения из таблицы, скрыть ключ, показать наименование
+  Dim fld, sql
+  sql = "SELECT [" & srcTable & "].[" & boundF & "], [" & srcTable & "].[" & dispF & "] FROM [" & srcTable & "] ORDER BY [" & srcTable & "].[" & dispF & "];"
+  Set fld = db.TableDefs(tName).Fields(fName)
+  Call SetFldProp(fld, "DisplayControl", 3, 111)
+  Call SetFldProp(fld, "RowSourceType", 10, "Table/Query")
+  Call SetFldProp(fld, "RowSource", 10, sql)
+  Call SetFldProp(fld, "BoundColumn", 4, 1)
+  Call SetFldProp(fld, "ColumnCount", 4, 2)
+  Call SetFldProp(fld, "ColumnHeads", 1, False)
+  Call SetFldProp(fld, "ColumnWidths", 10, "0см;3см")
+  Call SetFldProp(fld, "ListRows", 4, 16)
+  Call SetFldProp(fld, "ListWidth", 10, "3см")
+  Call SetFldProp(fld, "LimitToList", 1, True)
+  Call SetFldProp(fld, "AllowValueListEdits", 1, False)
+  Call SetFldProp(fld, "InheritValueList", 1, True)
+  Call SetFldProp(fld, "ShowOnlyRowSourceValues", 1, True)
 End Sub
 
 Function SplitPipe(s)
